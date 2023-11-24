@@ -1,2 +1,22 @@
 /* scrollbar */
 @import 'simplebar-react/dist/simplebar.min.css';
+
+@font-face {
+  font-family: 'Arabic-bold';
+  src: url('/fonts/ReemKufi-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Feather';
+  src: url('/fonts/Feather Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Din-round';
+  src: url('/fonts/DINRoundPro-Medi.ttf') format('truetype');
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}

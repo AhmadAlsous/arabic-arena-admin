@@ -10,32 +10,32 @@ const navConfig = [
   {
     title: 'dashboard',
     path: '/',
-    icon: icon('ic_analytics'),
+    icon: icon('home'),
   },
   {
-    title: 'user',
-    path: '/user',
-    icon: icon('ic_user'),
+    title: 'lessons',
+    path: '/lessons',
+    icon: icon('lesson'),
   },
   {
-    title: 'product',
-    path: '/products',
-    icon: icon('ic_cart'),
+    title: 'quizzes',
+    path: '/quizzes',
+    icon: icon('quiz'),
   },
   {
-    title: 'blog',
-    path: '/blog',
-    icon: icon('ic_blog'),
+    title: 'placement test',
+    path: '/placement-test',
+    icon: icon('placement'),
   },
   {
-    title: 'login',
-    path: '/login',
-    icon: icon('ic_lock'),
+    title: 'settings',
+    path: '/settings',
+    icon: icon('settings'),
   },
   {
-    title: 'Not found',
-    path: '/404',
-    icon: icon('ic_disabled'),
+    title: 'feedback & problems',
+    path: '/feedback',
+    icon: icon('feedback'),
   },
 ];
 

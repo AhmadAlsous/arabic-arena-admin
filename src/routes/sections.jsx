@@ -3,12 +3,13 @@ import { Outlet, Navigate, useRoutes } from 'react-router-dom';
 
 import DashboardLayout from 'src/layouts/dashboard';
 
-export const IndexPage = lazy(() => import('src/pages/app'));
-export const BlogPage = lazy(() => import('src/pages/blog'));
-export const UserPage = lazy(() => import('src/pages/user'));
-export const LoginPage = lazy(() => import('src/pages/login'));
-export const ProductsPage = lazy(() => import('src/pages/products'));
-export const Page404 = lazy(() => import('src/pages/page-not-found'));
+export const IndexPage = lazy(() => import('src/sections/dashboard/app-view'));
+export const BlogPage = lazy(() => import('src/sections/blog/blog-view'));
+export const UserPage = lazy(() => import('src/sections/user/user-view'));
+export const LoginPage = lazy(() => import('src/sections/login/login-view'));
+export const LessonsPage = lazy(() => import('src/sections/lessons/LessonsView'));
+export const LessonFormPage = lazy(() => import('src/sections/lessons/LessonForm'));
+export const Page404 = lazy(() => import('src/sections/error/not-found-view'));
 
 // ----------------------------------------------------------------------
 
@@ -24,9 +25,13 @@ export default function Router() {
       ),
       children: [
         { element: <IndexPage />, index: true },
-        { path: 'user', element: <UserPage /> },
-        { path: 'products', element: <ProductsPage /> },
-        { path: 'blog', element: <BlogPage /> },
+        { path: 'lessons', element: <LessonsPage /> },
+        { path: 'lessons/:lesson', element: <LessonFormPage /> },
+        { path: 'lessons/new', element: <LessonFormPage /> },
+        { path: 'quizzes', element: <BlogPage /> },
+        { path: 'placement-test', element: <UserPage /> },
+        { path: 'settings', element: <UserPage /> },
+        { path: 'feedback', element: <UserPage /> },
       ],
     },
     {

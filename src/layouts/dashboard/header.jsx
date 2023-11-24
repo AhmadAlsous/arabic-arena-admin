@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 
-import Box from '@mui/material/Box';
+import styled from '@emotion/styled';
+import { Button } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -13,13 +14,16 @@ import { bgBlur } from 'src/theme/css';
 
 import Iconify from 'src/components/iconify';
 
-import Searchbar from './common/searchbar';
 import { NAV, HEADER } from './config-layout';
-import AccountPopover from './common/account-popover';
-import LanguagePopover from './common/language-popover';
-import NotificationsPopover from './common/notifications-popover';
 
 // ----------------------------------------------------------------------
+
+const Container = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+`;
 
 export default function Header({ onOpenNav }) {
   const theme = useTheme();
@@ -27,23 +31,21 @@ export default function Header({ onOpenNav }) {
   const lgUp = useResponsive('up', 'lg');
 
   const renderContent = (
-    <>
+    <Container>
       {!lgUp && (
         <IconButton onClick={onOpenNav} sx={{ mr: 1 }}>
           <Iconify icon="eva:menu-2-fill" />
         </IconButton>
       )}
 
-      <Searchbar />
-
-      <Box sx={{ flexGrow: 1 }} />
+      <img src="/LanguageCenterLogo.png" alt="logo" width="40" height="45" />
 
       <Stack direction="row" alignItems="center" spacing={1}>
-        <LanguagePopover />
-        <NotificationsPopover />
-        <AccountPopover />
+        <Button sx={{ color: 'rgba(255, 0, 0, 0.7)' }} size="large">
+          LOG OUT
+        </Button>
       </Stack>
-    </>
+    </Container>
   );
 
   return (
