@@ -5,6 +5,7 @@ import styled from '@emotion/styled';
 import { Icon } from '@iconify/react';
 import { Link } from 'react-router-dom';
 import { replaceSpacesWithDashes } from 'src/utils/stringOperations';
+import Modal from 'src/components/Modal';
 
 const StyledBox = styled(Box)`
   position: relative;
@@ -53,7 +54,7 @@ const HoverContent = styled.div`
   transition: opacity 0.3s ease-in-out;
 `;
 
-export default function LessonCard({ lesson }) {
+export default function LessonCard({ lesson, isQuiz }) {
   const renderContent = lesson.imageLink ? (
     <Box
       component="img"
@@ -73,7 +74,11 @@ export default function LessonCard({ lesson }) {
 
   return (
     <Card>
-      <Link to={`/lessons/${replaceSpacesWithDashes(lesson.titleEnglish.toLowerCase())}`}>
+      <Link
+        to={`/${isQuiz ? 'quizzes' : 'lessons'}/${replaceSpacesWithDashes(
+          lesson.titleEnglish.toLowerCase()
+        )}`}
+      >
         <StyledBox sx={{ pt: '100%' }}>
           {renderContent}
           <HoverContent className="hover-content">EDIT</HoverContent>
@@ -92,9 +97,26 @@ export default function LessonCard({ lesson }) {
           &nbsp;|&nbsp;
           {lesson.type}
         </Typography>
-        <Button color="error">
-          <Icon icon="ic:outline-delete" fontSize={30} />
-        </Button>
+        <Modal
+          btn="Delete"
+          trigger={
+            <Button color="error">
+              <Icon icon="ic:outline-delete" fontSize={30} />
+            </Button>
+          }
+        >
+          <Typography fontFamily={'Din-round'} variant="h5" sx={{ mt: 1 }} textAlign={'center'}>
+            Confirmation
+          </Typography>
+          <Stack spacing={2} textAlign={'center'} paddingY={3}>
+            <Typography fontFamily={'Din-round'} variant="body1">
+              Are you sure you want to delete this {isQuiz ? 'quiz' : 'lesson'}?
+            </Typography>
+            <Typography fontFamily={'Din-round'} variant="body1">
+              This action cannot be undone.
+            </Typography>
+          </Stack>
+        </Modal>
       </Stack>
     </Card>
   );

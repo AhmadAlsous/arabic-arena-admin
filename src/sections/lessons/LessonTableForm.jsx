@@ -1,5 +1,5 @@
 import FormContainer from 'src/components/FormContainer';
-import { FormControlLabel, TextField, Stack, Switch, Button } from '@mui/material';
+import { FormControlLabel, TextField, Stack, Switch, Button, Tooltip } from '@mui/material';
 import styled from '@emotion/styled';
 import { Icon } from '@iconify/react';
 
@@ -11,6 +11,28 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import FormErrorMessage from 'src/components/FormErrorMessage';
+
+const InfoIconContainer = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
+const BigInfoIcon = styled.span`
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  font-size: 1.7rem;
+`;
+
+const StyledTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))`
+  & .MuiTooltip-tooltip {
+    max-width: 400px;
+    font-size: 0.8rem;
+    text-align: center;
+  }
+`;
 
 const StyledTableContainer = styled(TableContainer)`
   width: 75%;
@@ -46,40 +68,48 @@ const StyledIcon = styled(Icon)`
   cursor: pointer;
 `;
 
-function LessonTableForm({ words, setWords, register, errors, clearErrors, watch }) {
+function LessonTableForm({ register, errors, setValue, clearErrors, watch, lesson }) {
+  const isNew = lesson === null;
   const tableSwitchValue = watch('hasTable');
-  let hasError = false;
+  const words = watch('table');
 
   const addWord = () => {
-    setWords([...words, { arabicWord: '', transcription: '' }]);
+    setValue('table', [...words, { arabicWord: '', transcription: '' }]);
   };
 
   const deleteWord = (index) => {
     if (words.length === 1) {
-      setWords([{ arabicWord: '', transcription: '' }]);
+      setValue('table', [{ arabicWord: '', transcription: '' }]);
       return;
     }
     clearErrors(`table.${index}.arabicWord`);
     clearErrors(`table.${index}.transcription`);
-    const newWords = [...words];
-    newWords.splice(index, 1);
-    setWords(newWords);
-  };
-
-  const handleChange = (e, index, type) => {
-    const newWords = [...words];
-    newWords[index][type] = e.target.value;
-    setWords(newWords);
+    setValue(
+      'table',
+      words.filter((word, i) => i !== index)
+    );
   };
 
   return (
     <FormContainer title="Vocabulary Table">
-      <FormControlLabel
-        id="hasTable"
-        control={<Switch {...register('hasTable')} />}
-        label="Add Vocabulary Table &nbsp;"
-        labelPlacement="start"
-      />
+      <InfoIconContainer>
+        <FormControlLabel
+          id="hasTable"
+          control={
+            <Switch {...register('hasTable')} defaultChecked={isNew ? false : lesson.hasTable} />
+          }
+          label="Add Vocabulary Table &nbsp;"
+          labelPlacement="start"
+        />
+        <BigInfoIcon>
+          <StyledTooltip
+            title="Add a vocabulary table that contains the Arabic words and their translations to English and to the student's native language. The student can also listen to the pronunciation of these Arabic words by clicking on a speaker icon."
+            arrow
+          >
+            <Icon id="imageLink" icon="material-symbols:info-outline" />
+          </StyledTooltip>
+        </BigInfoIcon>
+      </InfoIconContainer>
       {tableSwitchValue && (
         <Stack spacing={2} direction={'column'} alignItems={'center'} sx={{ mt: 4 }}>
           <StyledTableContainer component={Paper}>
@@ -93,18 +123,6 @@ function LessonTableForm({ words, setWords, register, errors, clearErrors, watch
               </TableHead>
               <MuiTableBody>
                 {words.map((word, index) => {
-                  const errorWord = !!(
-                    errors.table &&
-                    errors.table[index] &&
-                    errors.table[index].arabicWord
-                  );
-                  const errorTranscription = !!(
-                    errors.table &&
-                    errors.table[index] &&
-                    errors.table[index].transcription
-                  );
-                  if (errorWord || errorTranscription) hasError = true;
-
                   return (
                     <StyledTableRow key={index}>
                       <StyledTableCell align="center">
@@ -114,9 +132,10 @@ function LessonTableForm({ words, setWords, register, errors, clearErrors, watch
                           variant="outlined"
                           fullWidth
                           size="small"
-                          error={errorWord}
-                          value={word.arabicWord}
-                          onChange={(e) => handleChange(e, index, 'arabicWord')}
+                          error={!!errors?.table?.[index]?.arabicWord}
+                          {...register(`table.${index}.arabicWord`, {
+                            required: 'This field is required',
+                          })}
                         />
                       </StyledTableCell>
                       <StyledTableCell align="center">
@@ -126,9 +145,10 @@ function LessonTableForm({ words, setWords, register, errors, clearErrors, watch
                           variant="outlined"
                           fullWidth
                           size="small"
-                          error={errorTranscription}
-                          value={word.transcription}
-                          onChange={(e) => handleChange(e, index, 'transcription')}
+                          error={!!errors?.table?.[index]?.transcription}
+                          {...register(`table.${index}.transcription`, {
+                            required: 'This field is required',
+                          })}
                         />
                       </StyledTableCell>
                       <StyledTableCell align="center">
@@ -145,7 +165,7 @@ function LessonTableForm({ words, setWords, register, errors, clearErrors, watch
                 })}
               </MuiTableBody>
             </Table>
-            {hasError && (
+            {!!errors?.table && (
               <>
                 <FormErrorMessage>
                   Please fill all table fields before submitting the form

@@ -19,6 +19,13 @@ const InfoIcon = styled.span`
   font-size: 1.3rem;
 `;
 
+const BigInfoIcon = styled.span`
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  font-size: 1.7rem;
+`;
+
 const EditorContainer = styled.div`
   width: 100%;
   padding-top: 15px;
@@ -36,22 +43,33 @@ const StyledTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
 ))`
   & .MuiTooltip-tooltip {
-    max-width: 200px;
+    max-width: 310px;
     font-size: 0.8rem;
     text-align: center;
   }
 `;
 
-function LessonVideoForm({ register, errors, setValue, watch }) {
+function LessonVideoForm({ register, errors, setValue, watch, lesson }) {
+  const isNew = lesson === null;
   const videoSwitchValue = watch('video');
   return (
     <FormContainer title="Video Information">
-      <FormControlLabel
-        id="video"
-        control={<Switch {...register('video')} />}
-        label="Add Video &nbsp;"
-        labelPlacement="start"
-      />
+      <InfoIconContainer>
+        <FormControlLabel
+          id="video"
+          control={<Switch {...register('video')} defaultChecked={isNew ? false : lesson.video} />}
+          label="Add Video &nbsp;"
+          labelPlacement="start"
+        />
+        <BigInfoIcon>
+          <StyledTooltip
+            title="Add a Youtube or Edpuzzle video to the lesson. This video will appear first thing below the title. You can optionally add a transcript to this video."
+            arrow
+          >
+            <Icon id="imageLink" icon="material-symbols:info-outline" />
+          </StyledTooltip>
+        </BigInfoIcon>
+      </InfoIconContainer>
       {videoSwitchValue && (
         <Stack spacing={2} direction={'column'} alignItems={'flex-start'} sx={{ mt: 3 }}>
           <InfoIconContainer>
@@ -82,7 +100,7 @@ function LessonVideoForm({ register, errors, setValue, watch }) {
           <EditorContainer>
             <CKEditor
               editor={Editor}
-              data="<p>Enter video transcript here...</p>"
+              data={isNew ? '<p>Enter video transcript here...</p>' : lesson.videoText}
               onChange={(_, editor) => {
                 const data = editor.getData();
                 setValue('videoText', data);

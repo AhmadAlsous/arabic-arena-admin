@@ -8,13 +8,15 @@ import { useForm } from 'react-hook-form';
 import LessonVideoForm from './LessonVideoForm';
 import LessonTextForm from './LessonTextForm';
 import LessonTableForm from './LessonTableForm';
-import { useState } from 'react';
 import LessonExerciseForm from './LessonExerciseForm';
+import { greenTeaLesson } from 'src/_mock/GreenTea';
 
 function LessonForm() {
   let lessonTitle = useParams()?.lesson;
   const isNew = lessonTitle === undefined;
   if (!isNew) lessonTitle = replaceDashesWithSpaces(lessonTitle);
+
+  const lesson = isNew ? null : greenTeaLesson;
 
   const {
     register,
@@ -27,75 +29,85 @@ function LessonForm() {
     clearErrors,
     formState: { errors },
   } = useForm({
-    defaultValues: {
-      titleArabic: 'a',
-      titleEnglish: 'a',
-      level: 'Beginner',
-      type: 'Grammar',
-      video: false,
-      videoLink: '',
-      videoText: '',
-      text: '',
-      hasTable: false,
-      table: [],
-      hasExercises: false,
-      exercises: [
-        {
-          questionArabic: 'a',
-          questionEnglish: 'a',
-          questionType: 'multipleChoice',
-          audioWord: '',
-          options: ['', ''],
-          correctAnswer: [],
-        },
-      ],
-    },
+    defaultValues: isNew
+      ? {
+          titleArabic: '',
+          titleEnglish: '',
+          level: '',
+          type: '',
+          video: false,
+          videoLink: '',
+          videoText: '',
+          text: '',
+          hasTable: false,
+          table: [
+            {
+              arabicWord: '',
+              transcription: '',
+            },
+          ],
+          hasExercises: false,
+          exercises: [
+            {
+              questionArabic: '',
+              questionEnglish: '',
+              questionType: 'multipleChoice',
+              audioWord: '',
+              options: ['', ''],
+              correctAnswer: [],
+            },
+          ],
+        }
+      : lesson,
   });
-
-  const [words, setWords] = useState([{ arabicWord: '', transcription: '' }]);
 
   const onSubmit = (data) => {
     console.log(data);
   };
 
   const handleClick = () => {
-    let hasErrorTable = false,
-      hasErrorExercises = false;
-    const exercises = getValues('exercises');
-    exercises.forEach((exercise, index) => {
-      if (exercise.correctAnswer.length === 0) {
-        setError(`exercises.${index}.correctAnswer`, {
-          type: 'required',
-          message: 'Please select at least one correct answer',
-        });
-        hasErrorExercises = true;
-      } else {
-        clearErrors(`exercises.${index}.correctAnswer`);
-      }
-    });
+    if (watch('hasExercises')) {
+      const exercises = getValues('exercises');
+      exercises.forEach((exercise, index) => {
+        if (exercise.correctAnswer.length === 0) {
+          setError(`exercises.${index}.correctAnswer`, {
+            type: 'required',
+            message: 'Please select at least one correct answer',
+          });
+        } else {
+          clearErrors(`exercises.${index}.correctAnswer`);
+        }
+      });
+    } else {
+      clearErrors(`exercises`);
+    }
 
-    if (!watch('hasTable')) return;
-    words.forEach((word, index) => {
-      if (word.arabicWord === '') {
-        setError(`table.${index}.arabicWord`, {
-          type: 'required',
-          message: 'This field is required',
-        });
-        hasErrorTable = true;
-      } else {
-        clearErrors(`table.${index}.arabicWord`);
-      }
-      if (word.transcription === '') {
-        setError(`table.${index}.transcription`, {
-          type: 'required',
-          message: 'This field is required',
-        });
-        hasErrorTable = true;
-      } else {
-        clearErrors(`table.${index}.transcription`);
-      }
-    });
-    if (!hasErrorTable) setValue('table', words);
+    if (watch('hasTable')) {
+      const table = getValues('table');
+      table.forEach((word, index) => {
+        if (word.arabicWord === '' || word.transcription === '') {
+          if (word.arabicWord === '')
+            setError(`table.${index}.arabicWord`, {
+              type: 'required',
+              message: 'Please fill in the missing fields',
+            });
+          if (word.transcription === '')
+            setError(`table.${index}.transcription`, {
+              type: 'required',
+              message: 'Please fill in the missing fields',
+            });
+        } else {
+          clearErrors(`table.${index}.arabicWord`);
+          clearErrors(`table.${index}.transcription`);
+        }
+      });
+    } else {
+      clearErrors(`table`);
+    }
+
+    if (!watch('video')) {
+      clearErrors('videoLink');
+    }
   };
 
   return (
@@ -119,18 +131,30 @@ function LessonForm() {
       </Stack>
       <form onSubmit={handleSubmit(onSubmit)}>
         <LessonInfoForm register={register} errors={errors} control={control} />
-        <LessonVideoForm register={register} errors={errors} setValue={setValue} watch={watch} />
-        <LessonTextForm setValue={setValue} />
+        <LessonVideoForm
+          register={register}
+          errors={errors}
+          setValue={setValue}
+          watch={watch}
+          lesson={lesson}
+        />
+        <LessonTextForm setValue={setValue} lesson={lesson} />
         <LessonTableForm
-          words={words}
-          setWords={setWords}
           register={register}
           errors={errors}
           clearErrors={clearErrors}
           setValue={setValue}
           watch={watch}
+          lesson={lesson}
         />
-        <LessonExerciseForm register={register} errors={errors} setValue={setValue} watch={watch} />
+        <LessonExerciseForm
+          register={register}
+          errors={errors}
+          setValue={setValue}
+          watch={watch}
+          lesson={lesson}
+          control={control}
+        />
         <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={2}>
           <Button variant="outlined" color="primary" type="reset">
             Cancel

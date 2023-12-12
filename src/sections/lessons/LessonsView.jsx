@@ -10,19 +10,19 @@ import Iconify from 'src/components/iconify';
 import { Icon } from '@iconify/react';
 
 import { lessons } from 'src/_mock/lessons';
+import { quizzes } from 'src/_mock/DummyQuizzes';
 
 import LessonCard from './LessonCard';
 import FilterBar from 'src/components/FilterBar';
 import { Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-// ----------------------------------------------------------------------
-
-export default function LessonsView() {
+export default function LessonsView({ isQuiz = false }) {
+  const material = isQuiz ? quizzes : lessons;
   const [selectedLevel, setSelectedLevel] = useState('All');
   const [selectedType, setSelectedType] = useState('All');
   const [searchWord, setSearchWord] = useState('');
-  const filteredLessons = lessons.filter(
+  const filteredLessons = material.filter(
     (lesson) =>
       (selectedLevel === 'All' || lesson.level === selectedLevel) &&
       (selectedType === 'All' || lesson.type === selectedType) &&
@@ -41,12 +41,12 @@ export default function LessonsView() {
         sx={{ mb: 5, mt: 2 }}
       >
         <Typography fontFamily={'Din-round'} variant="h4" sx={{ letterSpacing: '1.5px' }}>
-          Lessons
+          {isQuiz ? 'Quizzes' : 'Lessons'}
         </Typography>
-        <Link to="/lessons/new">
+        <Link to={`/${isQuiz ? 'quizzes' : 'lessons'}/new`}>
           <Button variant="contained" color="primary">
             <Icon fontSize={22} icon="ic:baseline-plus" />
-            &nbsp; Add New Lesson
+            &nbsp; Add New {isQuiz ? 'Quiz' : 'Lesson'}
           </Button>
         </Link>
       </Stack>
@@ -61,7 +61,7 @@ export default function LessonsView() {
         <TextField
           value={searchWord}
           onChange={(e) => setSearchWord(e.target.value)}
-          placeholder="Search lessons..."
+          placeholder={`Search ${isQuiz ? 'Quizzes' : 'Lessons'}...`}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -83,7 +83,7 @@ export default function LessonsView() {
       <Grid container spacing={3}>
         {filteredLessons.map((lesson) => (
           <Grid key={lesson.id} xs={12} sm={6} md={3}>
-            <LessonCard lesson={lesson} />
+            <LessonCard lesson={lesson} isQuiz={isQuiz} />
           </Grid>
         ))}
       </Grid>

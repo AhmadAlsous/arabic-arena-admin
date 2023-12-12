@@ -16,13 +16,14 @@ const EditorContainer = styled.div`
   }
 `;
 
-function LessonTextForm({ setValue }) {
+function LessonTextForm({ setValue, lesson }) {
+  const isNew = lesson === null;
   return (
     <FormContainer title="Lesson Content">
       <EditorContainer>
         <CKEditor
           editor={Editor}
-          data="<p>Enter lesson content here...</p>"
+          data={isNew ? '<p>Enter lesson content here...</p>' : lesson.text}
           onChange={(_, editor) => {
             const data = editor.getData();
             setValue('text', data);
