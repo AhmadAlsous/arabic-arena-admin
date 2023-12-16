@@ -20,15 +20,9 @@ module.exports = {
   entry: path.resolve(__dirname, 'src', 'ckeditor.ts'),
 
   output: {
-    // The name under which the editor will be exported.
-    library: {
-      name: 'ClassicEditor',
-      type: 'module', // Changed to module
-    },
-
     path: path.resolve(__dirname, 'build'),
     filename: 'ckeditor.js',
-    libraryTarget: 'module', // Changed to module
+    libraryTarget: 'module', // Set to module
     libraryExport: 'default',
     environment: {
       // Make sure the environment supports module JS
