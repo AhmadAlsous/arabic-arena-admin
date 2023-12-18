@@ -1,5 +1,3 @@
-import PropTypes from 'prop-types';
-
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import { styled, useTheme } from '@mui/material/styles';
@@ -93,9 +91,3 @@ export default function AppCurrentVisits({ title, subheader, chart, ...other }) 
     </Card>
   );
 }
-
-AppCurrentVisits.propTypes = {
-  chart: PropTypes.object,
-  subheader: PropTypes.string,
-  title: PropTypes.string,
-};

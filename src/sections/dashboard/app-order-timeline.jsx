@@ -1,5 +1,3 @@
-import PropTypes from 'prop-types';
-
 import Card from '@mui/material/Card';
 import Timeline from '@mui/lab/Timeline';
 import TimelineDot from '@mui/lab/TimelineDot';
@@ -37,12 +35,6 @@ export default function AnalyticsOrderTimeline({ title, subheader, list, ...othe
   );
 }
 
-AnalyticsOrderTimeline.propTypes = {
-  list: PropTypes.array,
-  subheader: PropTypes.string,
-  title: PropTypes.string,
-};
-
 // ----------------------------------------------------------------------
 
 function OrderItem({ item, lastTimeline }) {
@@ -72,8 +64,3 @@ function OrderItem({ item, lastTimeline }) {
     </TimelineItem>
   );
 }
-
-OrderItem.propTypes = {
-  item: PropTypes.object,
-  lastTimeline: PropTypes.bool,
-};

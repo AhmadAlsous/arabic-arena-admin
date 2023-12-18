@@ -1,6 +1,6 @@
 import path from 'path';
 import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react-swc';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
@@ -8,7 +8,11 @@ export default defineConfig({
     include: ['ckeditor5-custom-build'],
   },
   build: {
-    commonjsOptions: { exclude: ['ckeditor5-custom-build'], include: [] },
+    commonjsOptions: {
+      exclude: ['ckeditor5-custom-build'],
+      include: [],
+      requireReturnsDefault: 'auto',
+    },
   },
   resolve: {
     alias: [

@@ -1,5 +1,3 @@
-import PropTypes from 'prop-types';
-
 import styled from '@emotion/styled';
 import { Button } from '@mui/material';
 import Stack from '@mui/material/Stack';
@@ -77,7 +75,3 @@ export default function Header({ onOpenNav }) {
     </AppBar>
   );
 }
-
-Header.propTypes = {
-  onOpenNav: PropTypes.func,
-};

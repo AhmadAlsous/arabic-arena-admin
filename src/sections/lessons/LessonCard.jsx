@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Box, Button, Card, Stack, Typography } from '@mui/material';
 import styled from '@emotion/styled';
 import { Icon } from '@iconify/react';
@@ -121,7 +120,3 @@ export default function LessonCard({ lesson, isQuiz }) {
     </Card>
   );
 }
-
-LessonCard.propTypes = {
-  lesson: PropTypes.object.isRequired,
-};
