@@ -5,7 +5,7 @@ import { Tooltip } from '@mui/material';
 import styled from '@emotion/styled';
 import { Icon } from '@iconify/react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import Editor from 'ckeditor5-custom-build';
+import * as Editor from 'ckeditor5-custom-build';
 
 const InfoIconContainer = styled.div`
   position: relative;

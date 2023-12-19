@@ -1,7 +1,7 @@
 import FormContainer from 'src/components/FormContainer';
 import styled from '@emotion/styled';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import Editor from 'ckeditor5-custom-build';
+import * as Editor from 'ckeditor5-custom-build';
 
 const EditorContainer = styled.div`
   width: 100%;
