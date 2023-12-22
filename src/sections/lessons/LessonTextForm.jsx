@@ -1,7 +1,7 @@
 import FormContainer from 'src/components/FormContainer';
 import styled from '@emotion/styled';
 import { Editor } from 'react-draft-wysiwyg';
-import '../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import { EditorState } from 'draft-js';
 // import * as Editor from 'ckeditor5-custom-build';
