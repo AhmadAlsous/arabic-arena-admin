@@ -2,23 +2,12 @@ import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
 import { Base64UploadAdapter } from '@ckeditor/ckeditor5-upload';
-import {
-  Bold,
-  Italic,
-  Subscript,
-  Superscript,
-  Underline,
-} from '@ckeditor/ckeditor5-basic-styles';
+import { Bold, Italic, Subscript, Superscript, Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import type { EditorConfig } from '@ckeditor/ckeditor5-core';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import {
-  FontBackgroundColor,
-  FontColor,
-  FontFamily,
-  FontSize,
-} from '@ckeditor/ckeditor5-font';
+import { FontBackgroundColor, FontColor, FontFamily, FontSize } from '@ckeditor/ckeditor5-font';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
