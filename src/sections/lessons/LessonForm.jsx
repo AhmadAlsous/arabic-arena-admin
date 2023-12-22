@@ -1,5 +1,5 @@
 import { Button, Container, Stack } from '@mui/material';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useLocation } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import { replaceDashesWithSpaces } from 'src/utils/stringOperations';
 import { Icon } from '@iconify/react';
@@ -10,6 +10,10 @@ import LessonTextForm from './LessonTextForm';
 import LessonTableForm from './LessonTableForm';
 import LessonExerciseForm from './LessonExerciseForm';
 import { greenTeaLesson } from 'src/_mock/GreenTea';
+import { languages } from 'src/config/languages';
+import { translateText } from 'src/services/translateText';
+import { useEffect } from 'react';
+import BlockerModal from 'src/components/BlockerModal';
 
 function LessonForm() {
   let lessonTitle = useParams()?.lesson;
@@ -17,6 +21,7 @@ function LessonForm() {
   if (!isNew) lessonTitle = replaceDashesWithSpaces(lessonTitle);
 
   const lesson = isNew ? null : greenTeaLesson;
+  const savedForm = localStorage.getItem('form');
 
   const {
     register,
@@ -29,7 +34,9 @@ function LessonForm() {
     clearErrors,
     formState: { errors },
   } = useForm({
-    defaultValues: isNew
+    defaultValues: savedForm
+      ? JSON.parse(savedForm)
+      : isNew
       ? {
           titleArabic: '',
           titleEnglish: '',
@@ -61,7 +68,25 @@ function LessonForm() {
       : lesson,
   });
 
-  const onSubmit = (data) => {
+  useEffect(() => {
+    const subscription = watch(() => {
+      localStorage.setItem('form', JSON.stringify(getValues()));
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, getValues]);
+
+  const onSubmit = async (data) => {
+    console.log(getValues());
+    const arabicWords = data.table.map((word) => word.arabicWord);
+
+    for (const word of arabicWords) {
+      const translations = { arabic: word };
+      const translationPromises = languages.map(async (language) => {
+        translations[language.language] = await translateText(word, language.code);
+      });
+      await Promise.all(translationPromises);
+      console.log(translations);
+    }
     console.log(data);
   };
 
@@ -109,6 +134,11 @@ function LessonForm() {
       clearErrors('videoLink');
     }
   };
+
+  // const handleLeave = () => {
+  //   localStorage.removeItem('form');
+  //   blocker.proceed();
+  // };
 
   return (
     <Container>
