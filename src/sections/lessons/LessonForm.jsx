@@ -1,5 +1,5 @@
 import { Button, Container, Stack } from '@mui/material';
-import { Link, useParams, useLocation } from 'react-router-dom';
+import { Link, useParams, useBlocker } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import { replaceDashesWithSpaces } from 'src/utils/stringOperations';
 import { Icon } from '@iconify/react';
@@ -12,19 +12,26 @@ import LessonExerciseForm from './LessonExerciseForm';
 import { greenTeaLesson } from 'src/_mock/GreenTea';
 import { languages } from 'src/config/languages';
 import { translateText } from 'src/services/translateText';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import { convertToRaw, ContentState } from 'draft-js';
 import BlockerModal from 'src/components/BlockerModal';
 
 function LessonForm() {
+  const [isUpdated, setIsUpdated] = useState(false);
   let lessonTitle = useParams()?.lesson;
   const isNew = lessonTitle === undefined;
   if (!isNew) lessonTitle = replaceDashesWithSpaces(lessonTitle);
 
   const lesson = isNew ? null : greenTeaLesson;
   const savedForm = localStorage.getItem('form');
+
+  let blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      currentLocation.pathname !== nextLocation.pathname && isUpdated,
+    [isUpdated]
+  );
 
   const {
     register,
@@ -81,6 +88,7 @@ function LessonForm() {
 
   useEffect(() => {
     const subscription = watch(() => {
+      setIsUpdated(true);
       localStorage.setItem('form', JSON.stringify(getValues()));
     });
     return () => subscription.unsubscribe();
@@ -197,10 +205,10 @@ function LessonForm() {
     }
   };
 
-  // const handleLeave = () => {
-  //   localStorage.removeItem('form');
-  //   blocker.proceed();
-  // };
+  const handleLeave = () => {
+    blocker.proceed();
+    localStorage.removeItem('form');
+  };
 
   return (
     <Container>
@@ -250,15 +258,15 @@ function LessonForm() {
           control={control}
           getValues={getValues}
         />
-        <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={2}>
-          <Button variant="outlined" color="primary" type="reset">
-            Cancel
-          </Button>
+        <Stack direction="row" alignItems="center" justifyContent="flex-end">
           <Button variant="contained" color="primary" type="submit" onClick={handleClick}>
-            Create Lesson
+            {isNew ? 'Create Lesson' : 'Update Lesson'}
           </Button>
         </Stack>
       </form>
+      {blocker.state === 'blocked' ? (
+        <BlockerModal cancel={() => blocker.reset()} proceed={handleLeave} />
+      ) : null}
     </Container>
   );
 }

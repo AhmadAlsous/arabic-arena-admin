@@ -18,6 +18,7 @@ import { Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 export default function LessonsView({ isQuiz = false }) {
+  localStorage.removeItem('form');
   const material = isQuiz ? quizzes : lessons;
   const [selectedLevel, setSelectedLevel] = useState('All');
   const [selectedType, setSelectedType] = useState('All');

@@ -292,6 +292,7 @@ function LessonExerciseForm({
                   <Controller
                     name={`${isQuiz ? 'questions' : 'exercises'}.${index}.questionType`}
                     control={control}
+                    disabled={exercise.correctAnswer.length > 0}
                     rules={{ required: 'This field is required' }}
                     render={({ field }) => (
                       <Select

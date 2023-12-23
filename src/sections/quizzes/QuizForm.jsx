@@ -1,5 +1,5 @@
 import { Button, Container, Stack } from '@mui/material';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useBlocker } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import { replaceDashesWithSpaces } from 'src/utils/stringOperations';
 import { Icon } from '@iconify/react';
@@ -7,14 +7,23 @@ import { useForm } from 'react-hook-form';
 import { quiz } from 'src/_mock/DummyQuiz';
 import QuizInfoForm from './QuizInfoForm';
 import LessonExerciseForm from '../lessons/LessonExerciseForm';
+import BlockerModal from 'src/components/BlockerModal';
+import { useEffect, useState } from 'react';
 
 function QuizForm() {
+  const [isUpdated, setIsUpdated] = useState(false);
   let quizTitle = useParams()?.quiz;
   const isNew = quizTitle === undefined;
   if (!isNew) quizTitle = replaceDashesWithSpaces(quizTitle);
-  console.log(isNew, quizTitle);
 
   const dummyQuiz = isNew ? null : quiz;
+  const savedForm = localStorage.getItem('form');
+
+  let blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      currentLocation.pathname !== nextLocation.pathname && isUpdated,
+    [isUpdated]
+  );
 
   const {
     register,
@@ -27,7 +36,9 @@ function QuizForm() {
     clearErrors,
     formState: { errors },
   } = useForm({
-    defaultValues: isNew
+    defaultValues: savedForm
+      ? JSON.parse(savedForm)
+      : isNew
       ? {
           titleArabic: '',
           titleEnglish: '',
@@ -48,6 +59,14 @@ function QuizForm() {
       : dummyQuiz,
   });
 
+  useEffect(() => {
+    const subscription = watch(() => {
+      setIsUpdated(true);
+      localStorage.setItem('form', JSON.stringify(getValues()));
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, getValues]);
+
   const onSubmit = (data) => {
     console.log(data);
   };
@@ -64,6 +83,11 @@ function QuizForm() {
         clearErrors(`questions.${index}.correctAnswer`);
       }
     });
+  };
+
+  const handleLeave = () => {
+    blocker.proceed();
+    localStorage.removeItem('form');
   };
 
   return (
@@ -96,15 +120,15 @@ function QuizForm() {
           control={control}
           isQuiz={true}
         />
-        <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={2}>
-          <Button variant="outlined" color="primary" type="reset">
-            Cancel
-          </Button>
+        <Stack direction="row" alignItems="center" justifyContent="flex-end">
           <Button variant="contained" color="primary" type="submit" onClick={handleClick}>
-            Create Quiz
+            {isNew ? 'Create Quiz' : 'Update Quiz'}
           </Button>
         </Stack>
       </form>
+      {blocker.state === 'blocked' ? (
+        <BlockerModal cancel={() => blocker.reset()} proceed={handleLeave} />
+      ) : null}
     </Container>
   );
 }
