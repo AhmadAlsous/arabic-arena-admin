@@ -4,8 +4,7 @@ import Input from './Input';
 import { Tooltip } from '@mui/material';
 import styled from '@emotion/styled';
 import { Icon } from '@iconify/react';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import * as Editor from 'ckeditor5-custom-build';
+import Editor from 'src/components/Editor';
 
 const InfoIconContainer = styled.div`
   position: relative;
@@ -29,14 +28,6 @@ const BigInfoIcon = styled.span`
 const EditorContainer = styled.div`
   width: 100%;
   padding-top: 15px;
-
-  & .ck.ck-editor__main > .ck-editor__editable {
-    background-color: transparent;
-  }
-
-  & .ck.ck-toolbar {
-    background-color: transparent;
-  }
 `;
 
 const StyledTooltip = styled(({ className, ...props }) => (
@@ -49,7 +40,7 @@ const StyledTooltip = styled(({ className, ...props }) => (
   }
 `;
 
-function LessonVideoForm({ register, errors, setValue, watch, lesson }) {
+function LessonVideoForm({ register, errors, setValue, watch, lesson, getValues }) {
   const isNew = lesson === null;
   const videoSwitchValue = watch('video');
   return (
@@ -57,7 +48,9 @@ function LessonVideoForm({ register, errors, setValue, watch, lesson }) {
       <InfoIconContainer>
         <FormControlLabel
           id="video"
-          control={<Switch {...register('video')} defaultChecked={isNew ? false : lesson.video} />}
+          control={
+            <Switch {...register('video')} defaultChecked={isNew ? false : !!getValues('video')} />
+          }
           label="Add Video &nbsp;"
           labelPlacement="start"
         />
@@ -98,14 +91,7 @@ function LessonVideoForm({ register, errors, setValue, watch, lesson }) {
             </InfoIcon>
           </InfoIconContainer>
           <EditorContainer>
-            <CKEditor
-              editor={Editor}
-              data={isNew ? '<p>Enter video transcript here...</p>' : lesson.videoText}
-              onChange={(_, editor) => {
-                const data = editor.getData();
-                setValue('videoText', data);
-              }}
-            />
+            <Editor setValue={setValue} text={getValues('videoText')} isVideo={true} />
           </EditorContainer>
         </Stack>
       )}

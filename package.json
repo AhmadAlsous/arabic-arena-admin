@@ -18,7 +18,6 @@
     "vite:build": "vite build"
   },
   "dependencies": {
-    "@ckeditor/ckeditor5-react": "^6.2.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@faker-js/faker": "^8.1.0",
@@ -26,10 +25,12 @@
     "@mui/lab": "^5.0.0-alpha.147",
     "@mui/material": "^5.14.18",
     "apexcharts": "^3.43.0",
-    "ckeditor5-custom-build": "file:editor",
     "date-fns": "^2.30.0",
     "draft-js": "^0.11.7",
+    "draft-js-export-html": "^1.4.1",
+    "draftjs-to-html": "^0.9.1",
     "history": "^5.3.0",
+    "html-to-draftjs": "^1.5.0",
     "lodash": "^4.17.21",
     "numeral": "^2.0.6",
     "react": "^18.2.0",

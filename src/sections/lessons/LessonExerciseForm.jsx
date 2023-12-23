@@ -105,6 +105,7 @@ function LessonExerciseForm({
   watch,
   lesson,
   control,
+  getValues,
   isQuiz = false,
 }) {
   const isNew = lesson === null;
@@ -184,8 +185,6 @@ function LessonExerciseForm({
     }
   };
 
-  console.log(exercises);
-
   return (
     <FormContainer title={isQuiz ? 'Questions' : 'Exercises'}>
       {!isQuiz && (
@@ -195,7 +194,7 @@ function LessonExerciseForm({
             control={
               <Switch
                 {...register('hasExercises')}
-                defaultChecked={isNew ? false : lesson.hasExercises}
+                defaultChecked={isNew ? false : getValues('hasExercises')}
               />
             }
             label="Add Exercises &nbsp;"

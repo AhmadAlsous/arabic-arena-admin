@@ -13,6 +13,9 @@ import { greenTeaLesson } from 'src/_mock/GreenTea';
 import { languages } from 'src/config/languages';
 import { translateText } from 'src/services/translateText';
 import { useEffect } from 'react';
+import draftToHtml from 'draftjs-to-html';
+import htmlToDraft from 'html-to-draftjs';
+import { convertToRaw, ContentState } from 'draft-js';
 import BlockerModal from 'src/components/BlockerModal';
 
 function LessonForm() {
@@ -65,7 +68,15 @@ function LessonForm() {
             },
           ],
         }
-      : lesson,
+      : {
+          ...lesson,
+          text: convertToRaw(
+            ContentState.createFromBlockArray(htmlToDraft(lesson.text).contentBlocks)
+          ),
+          videoText: convertToRaw(
+            ContentState.createFromBlockArray(htmlToDraft(lesson.videoText).contentBlocks)
+          ),
+        },
   });
 
   useEffect(() => {
@@ -75,17 +86,68 @@ function LessonForm() {
     return () => subscription.unsubscribe();
   }, [watch, getValues]);
 
-  const onSubmit = async (data) => {
-    console.log(getValues());
-    const arabicWords = data.table.map((word) => word.arabicWord);
+  const toHtml = (editorState) => {
+    let html = draftToHtml(editorState);
 
-    for (const word of arabicWords) {
-      const translations = { arabic: word };
-      const translationPromises = languages.map(async (language) => {
-        translations[language.language] = await translateText(word, language.code);
-      });
-      await Promise.all(translationPromises);
-      console.log(translations);
+    const arabicRegex = /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    const applyAlignmentToParent = (el) => {
+      while (el.parentNode && el.parentNode !== doc.body) {
+        el = el.parentNode;
+        if (el.nodeType === Node.ELEMENT_NODE) {
+          el.style.textAlign = 'right';
+          el.style.direction = 'rtl';
+        }
+      }
+    };
+
+    doc.body.querySelectorAll('*').forEach((el) => {
+      if (el.nodeType === Node.TEXT_NODE && arabicRegex.test(el.textContent)) {
+        applyAlignmentToParent(el);
+      } else if (el.nodeType === Node.ELEMENT_NODE && arabicRegex.test(el.textContent)) {
+        el.style.textAlign = 'right';
+        el.style.direction = 'rtl';
+      }
+    });
+
+    const divs = doc.body.querySelectorAll('div');
+    divs.forEach((div) => {
+      const hasImage = div.querySelector('img') !== null;
+      const textAlignStyle = div.style.textAlign;
+      if (hasImage && textAlignStyle === 'none') {
+        div.style.textAlign = 'center';
+      }
+    });
+
+    const images = doc.body.querySelectorAll('img');
+    images.forEach((img) => {
+      if (img.parentNode.tagName !== 'DIV') {
+        const div = doc.createElement('div');
+        div.style.textAlign = 'center';
+        img.parentNode.insertBefore(div, img);
+        div.appendChild(img);
+      }
+    });
+
+    return doc.body.innerHTML;
+  };
+
+  const onSubmit = async (data) => {
+    if (typeof data.text !== 'string') data.text = toHtml(data.text);
+    if (typeof data.videoText !== 'string') data.videoText = toHtml(data.videoText);
+
+    if (data.hasTable) {
+      const arabicWords = data.table.map((word) => word.arabicWord);
+      for (const word of arabicWords) {
+        const translations = { arabic: word };
+        const translationPromises = languages.map(async (language) => {
+          translations[language.language] = await translateText(word, language.code);
+        });
+        await Promise.all(translationPromises);
+        console.log(translations);
+      }
     }
     console.log(data);
   };
@@ -167,8 +229,9 @@ function LessonForm() {
           setValue={setValue}
           watch={watch}
           lesson={lesson}
+          getValues={getValues}
         />
-        <LessonTextForm setValue={setValue} lesson={lesson} />
+        <LessonTextForm setValue={setValue} text={getValues('text')} />
         <LessonTableForm
           register={register}
           errors={errors}
@@ -176,6 +239,7 @@ function LessonForm() {
           setValue={setValue}
           watch={watch}
           lesson={lesson}
+          getValues={getValues}
         />
         <LessonExerciseForm
           register={register}
@@ -184,6 +248,7 @@ function LessonForm() {
           watch={watch}
           lesson={lesson}
           control={control}
+          getValues={getValues}
         />
         <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={2}>
           <Button variant="outlined" color="primary" type="reset">

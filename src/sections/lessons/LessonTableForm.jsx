@@ -68,7 +68,7 @@ const StyledIcon = styled(Icon)`
   cursor: pointer;
 `;
 
-function LessonTableForm({ register, errors, setValue, clearErrors, watch, lesson }) {
+function LessonTableForm({ register, errors, setValue, clearErrors, watch, lesson, getValues }) {
   const isNew = lesson === null;
   const tableSwitchValue = watch('hasTable');
   const words = watch('table');
@@ -96,7 +96,10 @@ function LessonTableForm({ register, errors, setValue, clearErrors, watch, lesso
         <FormControlLabel
           id="hasTable"
           control={
-            <Switch {...register('hasTable')} defaultChecked={isNew ? false : lesson.hasTable} />
+            <Switch
+              {...register('hasTable')}
+              defaultChecked={isNew ? false : getValues('hasTable')}
+            />
           }
           label="Add Vocabulary Table &nbsp;"
           labelPlacement="start"
