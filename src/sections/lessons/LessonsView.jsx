@@ -36,14 +36,16 @@ export default function LessonsView({ isQuiz = false }) {
   const [selectedLevel, setSelectedLevel] = useState('All');
   const [selectedType, setSelectedType] = useState('All');
   const [searchWord, setSearchWord] = useState('');
-  const filteredLessons = data.filter(
-    (lesson) =>
-      (selectedLevel === 'All' || lesson.level === selectedLevel) &&
-      (selectedType === 'All' || lesson.type === selectedType) &&
-      (searchWord === '' ||
-        lesson.titleArabic.includes(searchWord) ||
-        lesson.titleEnglish.toLowerCase().includes(searchWord.toLowerCase()))
-  );
+  const filteredLessons = data
+    ? data.filter(
+        (lesson) =>
+          (selectedLevel === 'All' || lesson.level === selectedLevel) &&
+          (selectedType === 'All' || lesson.type === selectedType) &&
+          (searchWord === '' ||
+            lesson.titleArabic.includes(searchWord) ||
+            lesson.titleEnglish.toLowerCase().includes(searchWord.toLowerCase()))
+      )
+    : [];
 
   return (
     <Container>
@@ -96,11 +98,12 @@ export default function LessonsView({ isQuiz = false }) {
 
       <Grid container spacing={3}>
         {isLoading && <Spinner />}
-        {filteredLessons.map((lesson) => (
-          <Grid key={lesson.id} xs={12} sm={6} md={3}>
-            <LessonCard lesson={lesson} isQuiz={isQuiz} />
-          </Grid>
-        ))}
+        {data &&
+          filteredLessons.map((lesson) => (
+            <Grid key={lesson.id} xs={12} sm={6} md={3}>
+              <LessonCard lesson={lesson} isQuiz={isQuiz} />
+            </Grid>
+          ))}
       </Grid>
     </Container>
   );
