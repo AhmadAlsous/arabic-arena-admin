@@ -26,6 +26,11 @@ export default function LessonsView({ isQuiz = false }) {
     queryFn: fetchLessons,
   });
 
+  console.log(data);
+  if (error) {
+    console.log(error);
+  }
+
   localStorage.removeItem('form');
   const material = isQuiz ? quizzes : lessons;
   const [selectedLevel, setSelectedLevel] = useState('All');
