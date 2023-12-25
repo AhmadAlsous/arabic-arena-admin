@@ -16,14 +16,22 @@ import LessonCard from './LessonCard';
 import FilterBar from 'src/components/FilterBar';
 import { Button } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { fetchLessons } from 'src/services/lessonServices';
+import Spinner from 'src/components/Spinner';
 
 export default function LessonsView({ isQuiz = false }) {
+  const { isLoading, data, error } = useQuery({
+    queryKey: ['lessons'],
+    queryFn: fetchLessons,
+  });
+
   localStorage.removeItem('form');
   const material = isQuiz ? quizzes : lessons;
   const [selectedLevel, setSelectedLevel] = useState('All');
   const [selectedType, setSelectedType] = useState('All');
   const [searchWord, setSearchWord] = useState('');
-  const filteredLessons = material.filter(
+  const filteredLessons = data.filter(
     (lesson) =>
       (selectedLevel === 'All' || lesson.level === selectedLevel) &&
       (selectedType === 'All' || lesson.type === selectedType) &&
@@ -82,6 +90,7 @@ export default function LessonsView({ isQuiz = false }) {
       </Stack>
 
       <Grid container spacing={3}>
+        {isLoading && <Spinner />}
         {filteredLessons.map((lesson) => (
           <Grid key={lesson.id} xs={12} sm={6} md={3}>
             <LessonCard lesson={lesson} isQuiz={isQuiz} />

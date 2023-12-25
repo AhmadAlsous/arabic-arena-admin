@@ -20,6 +20,7 @@ export default function AppView() {
           <AppWidgetSummary
             title="Users"
             total={1352}
+            link={'/users'}
             icon={<img alt="icon" src="/assets/icons/glass/graduated.png" />}
           />
         </Grid>
@@ -28,6 +29,7 @@ export default function AppView() {
           <AppWidgetSummary
             title="Lessons"
             total={714}
+            link={'/lessons'}
             icon={<img alt="icon" src="/assets/icons/glass/book.png" />}
           />
         </Grid>
@@ -36,6 +38,7 @@ export default function AppView() {
           <AppWidgetSummary
             title="Quizzes"
             total={172}
+            link={'/quizzes'}
             icon={<img alt="icon" src="/assets/icons/glass/graduation.png" />}
           />
         </Grid>
@@ -44,6 +47,7 @@ export default function AppView() {
           <AppWidgetSummary
             title="Feedbacks"
             total={234}
+            link={'/feedback'}
             icon={<img alt="icon" src="/assets/icons/glass/feedback.png" />}
           />
         </Grid>

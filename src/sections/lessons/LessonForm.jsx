@@ -47,43 +47,43 @@ function LessonForm() {
     defaultValues: savedForm
       ? JSON.parse(savedForm)
       : isNew
-      ? {
-          titleArabic: '',
-          titleEnglish: '',
-          level: '',
-          type: '',
-          video: false,
-          videoLink: '',
-          videoText: '',
-          text: '',
-          hasTable: false,
-          table: [
-            {
-              arabicWord: '',
-              transcription: '',
-            },
-          ],
-          hasExercises: false,
-          exercises: [
-            {
-              questionArabic: '',
-              questionEnglish: '',
-              questionType: 'multipleChoice',
-              audioWord: '',
-              options: ['', ''],
-              correctAnswer: [],
-            },
-          ],
-        }
-      : {
-          ...lesson,
-          text: convertToRaw(
-            ContentState.createFromBlockArray(htmlToDraft(lesson.text).contentBlocks)
-          ),
-          videoText: convertToRaw(
-            ContentState.createFromBlockArray(htmlToDraft(lesson.videoText).contentBlocks)
-          ),
-        },
+        ? {
+            titleArabic: '',
+            titleEnglish: '',
+            level: '',
+            type: '',
+            video: false,
+            videoLink: '',
+            videoText: '',
+            text: '',
+            hasTable: false,
+            table: [
+              {
+                arabicWord: '',
+                transcription: '',
+              },
+            ],
+            hasExercises: false,
+            exercises: [
+              {
+                questionArabic: '',
+                questionEnglish: '',
+                questionType: 'multipleChoice',
+                audioWord: '',
+                options: ['', ''],
+                correctAnswer: [],
+              },
+            ],
+          }
+        : {
+            ...lesson,
+            text: convertToRaw(
+              ContentState.createFromBlockArray(htmlToDraft(lesson.text).contentBlocks)
+            ),
+            videoText: convertToRaw(
+              ContentState.createFromBlockArray(htmlToDraft(lesson.videoText).contentBlocks)
+            ),
+          },
   });
 
   useEffect(() => {
@@ -149,7 +149,7 @@ function LessonForm() {
     if (data.hasTable) {
       const arabicWords = data.table.map((word) => word.arabicWord);
       for (const word of arabicWords) {
-        const translations = { arabic: word };
+        const translations = { id: word };
         const translationPromises = languages.map(async (language) => {
           translations[language.language] = await translateText(word, language.code);
         });
