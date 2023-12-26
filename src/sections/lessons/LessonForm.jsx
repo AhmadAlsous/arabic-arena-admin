@@ -168,6 +168,7 @@ function LessonForm() {
       const arabicWords = data.table.map((word) => word.arabicWord);
       const fetchWordPromises = arabicWords.map(async (word) => {
         try {
+          console.log(word);
           const wordResponse = await fetchWord(word);
           console.log(wordResponse);
           if (!wordResponse) {
