@@ -1,7 +1,7 @@
 import { BACKEND_URL } from 'src/config/constants';
 
-export const fetchLessons = async () => {
-  const response = await fetch(`${BACKEND_URL}/lessons`);
+export const fetchWord = async (word) => {
+  const response = await fetch(`${BACKEND_URL}/words/${word}`);
   if (!response.ok) {
     console.log(response);
     throw new Error();
@@ -9,13 +9,13 @@ export const fetchLessons = async () => {
   return await response.json();
 };
 
-export const addLesson = async (lesson) => {
-  const response = await fetch(`${BACKEND_URL}/lessons`, {
+export const addWord = async (word) => {
+  const response = await fetch(`${BACKEND_URL}/words`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(lesson),
+    body: JSON.stringify(word),
   });
   if (!response.ok) {
     console.log(response);

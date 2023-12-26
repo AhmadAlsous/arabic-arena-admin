@@ -17,6 +17,9 @@ import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import { convertToRaw, ContentState } from 'draft-js';
 import BlockerModal from 'src/components/BlockerModal';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { addWord, fetchWord } from 'src/services/wordServices';
+import { addLesson } from 'src/services/lessonServices';
 
 function LessonForm() {
   const [isUpdated, setIsUpdated] = useState(false);
@@ -142,21 +145,46 @@ function LessonForm() {
     return doc.body.innerHTML;
   };
 
+  const {
+    mutate: saveWord,
+    isLoading: isSavingWord,
+    error: errorSavingWord,
+  } = useMutation({
+    mutationFn: addWord,
+  });
+  const {
+    mutate: saveLesson,
+    isLoading: isSavingLesson,
+    error: errorSavingLesson,
+  } = useMutation({
+    mutationFn: addLesson,
+  });
+
   const onSubmit = async (data) => {
     if (typeof data.text !== 'string') data.text = toHtml(data.text);
     if (typeof data.videoText !== 'string') data.videoText = toHtml(data.videoText);
 
     if (data.hasTable) {
       const arabicWords = data.table.map((word) => word.arabicWord);
-      for (const word of arabicWords) {
-        const translations = { id: word };
-        const translationPromises = languages.map(async (language) => {
-          translations[language.language] = await translateText(word, language.code);
-        });
-        await Promise.all(translationPromises);
-        console.log(translations);
-      }
+      const fetchWordPromises = arabicWords.map(async (word) => {
+        try {
+          const wordResponse = await fetchWord(word);
+          console.log(wordResponse);
+          if (!wordResponse) {
+            const translations = { id: word };
+            const translationPromises = languages.map(async (language) => {
+              translations[language.language] = await translateText(word, language.code);
+            });
+            await Promise.all(translationPromises);
+            console.log(translations);
+          }
+        } catch (error) {
+          console.error('Error fetching word:', error);
+        }
+      });
+      await Promise.all(fetchWordPromises);
     }
+
     console.log(data);
   };
 
