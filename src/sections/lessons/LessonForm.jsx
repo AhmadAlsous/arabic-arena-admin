@@ -87,15 +87,17 @@ function LessonForm() {
               },
             ],
           }
-        : {
-            ...lesson,
-            text: convertToRaw(
-              ContentState.createFromBlockArray(htmlToDraft(lesson.text).contentBlocks)
-            ),
-            videoText: convertToRaw(
-              ContentState.createFromBlockArray(htmlToDraft(lesson.videoText).contentBlocks)
-            ),
-          },
+        : lesson
+          ? {
+              ...lesson,
+              text: convertToRaw(
+                ContentState.createFromBlockArray(htmlToDraft(lesson.text).contentBlocks)
+              ),
+              videoText: convertToRaw(
+                ContentState.createFromBlockArray(htmlToDraft(lesson.videoText).contentBlocks)
+              ),
+            }
+          : {},
   });
 
   useEffect(() => {
