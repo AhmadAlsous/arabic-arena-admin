@@ -9,7 +9,6 @@ import LessonVideoForm from './LessonVideoForm';
 import LessonTextForm from './LessonTextForm';
 import LessonTableForm from './LessonTableForm';
 import LessonExerciseForm from './LessonExerciseForm';
-import { greenTeaLesson } from 'src/_mock/GreenTea';
 import { languages } from 'src/config/languages';
 import { translateText } from 'src/services/translateText';
 import { useEffect, useState } from 'react';
@@ -17,9 +16,10 @@ import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import { convertToRaw, ContentState } from 'draft-js';
 import BlockerModal from 'src/components/BlockerModal';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { addWord, fetchWord } from 'src/services/wordServices';
-import { addLesson } from 'src/services/lessonServices';
+import { addLesson, fetchLesson } from 'src/services/lessonServices';
+import Spinner from 'src/components/Spinner';
 
 function LessonForm() {
   const [isUpdated, setIsUpdated] = useState(false);
@@ -27,7 +27,16 @@ function LessonForm() {
   const isNew = lessonTitle === undefined;
   if (!isNew) lessonTitle = replaceDashesWithSpaces(lessonTitle);
 
-  const lesson = isNew ? null : greenTeaLesson;
+  const {
+    data: fetchedLesson,
+    isLoading: isLoadingLesson,
+    error: errorFetchingLesson,
+  } = useQuery({
+    queryKey: [lessonTitle],
+    queryFn: () => fetchLesson(lessonTitle),
+  });
+  console.log(fetchedLesson);
+  const lesson = isNew ? null : fetchedLesson;
   const savedForm = localStorage.getItem('form');
 
   let blocker = useBlocker(
@@ -247,61 +256,70 @@ function LessonForm() {
 
   return (
     <Container>
-      <Stack
-        direction="row"
-        alignItems="center"
-        flexWrap="wrap-reverse"
-        justifyContent="space-between"
-        sx={{ mb: 5, mt: 2 }}
-      >
-        <Typography fontFamily={'Din-round'} variant="h4" sx={{ letterSpacing: '1.5px' }}>
-          {isNew ? 'Create New Lesson' : lessonTitle}
-        </Typography>
-        <Link to="/lessons">
-          <Button>
-            <Icon fontSize={26} icon="material-symbols:keyboard-arrow-left" />
-            Back To Lessons
-          </Button>
-        </Link>
-      </Stack>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <LessonInfoForm register={register} errors={errors} control={control} />
-        <LessonVideoForm
-          register={register}
-          errors={errors}
-          setValue={setValue}
-          watch={watch}
-          lesson={lesson}
-          getValues={getValues}
-        />
-        <LessonTextForm setValue={setValue} text={getValues('text')} />
-        <LessonTableForm
-          register={register}
-          errors={errors}
-          clearErrors={clearErrors}
-          setValue={setValue}
-          watch={watch}
-          lesson={lesson}
-          getValues={getValues}
-        />
-        <LessonExerciseForm
-          register={register}
-          errors={errors}
-          setValue={setValue}
-          watch={watch}
-          lesson={lesson}
-          control={control}
-          getValues={getValues}
-        />
-        <Stack direction="row" alignItems="center" justifyContent="flex-end">
-          <Button variant="contained" color="primary" type="submit" onClick={handleClick}>
-            {isNew ? 'Create Lesson' : 'Update Lesson'}
-          </Button>
+      {isLoadingLesson && (
+        <Stack sx={{ mt: 15 }}>
+          <Spinner />
         </Stack>
-      </form>
-      {blocker.state === 'blocked' ? (
-        <BlockerModal cancel={() => blocker.reset()} proceed={handleLeave} />
-      ) : null}
+      )}
+      {!isLoadingLesson && (
+        <>
+          <Stack
+            direction="row"
+            alignItems="center"
+            flexWrap="wrap-reverse"
+            justifyContent="space-between"
+            sx={{ mb: 5, mt: 2 }}
+          >
+            <Typography fontFamily={'Din-round'} variant="h4" sx={{ letterSpacing: '1.5px' }}>
+              {isNew ? 'Create New Lesson' : lesson.titleEnglish}
+            </Typography>
+            <Link to="/lessons">
+              <Button>
+                <Icon fontSize={26} icon="material-symbols:keyboard-arrow-left" />
+                Back To Lessons
+              </Button>
+            </Link>
+          </Stack>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <LessonInfoForm register={register} errors={errors} control={control} />
+            <LessonVideoForm
+              register={register}
+              errors={errors}
+              setValue={setValue}
+              watch={watch}
+              lesson={lesson}
+              getValues={getValues}
+            />
+            <LessonTextForm setValue={setValue} text={getValues('text')} />
+            <LessonTableForm
+              register={register}
+              errors={errors}
+              clearErrors={clearErrors}
+              setValue={setValue}
+              watch={watch}
+              lesson={lesson}
+              getValues={getValues}
+            />
+            <LessonExerciseForm
+              register={register}
+              errors={errors}
+              setValue={setValue}
+              watch={watch}
+              lesson={lesson}
+              control={control}
+              getValues={getValues}
+            />
+            <Stack direction="row" alignItems="center" justifyContent="flex-end">
+              <Button variant="contained" color="primary" type="submit" onClick={handleClick}>
+                {isNew ? 'Create Lesson' : 'Update Lesson'}
+              </Button>
+            </Stack>
+          </form>
+          {blocker.state === 'blocked' ? (
+            <BlockerModal cancel={() => blocker.reset()} proceed={handleLeave} />
+          ) : null}
+        </>
+      )}
     </Container>
   );
 }
