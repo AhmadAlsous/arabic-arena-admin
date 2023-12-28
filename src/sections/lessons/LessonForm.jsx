@@ -17,7 +17,7 @@ import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import { convertToRaw, ContentState } from 'draft-js';
 import BlockerModal from 'src/components/BlockerModal';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { addWord, fetchWord } from 'src/services/wordServices';
 import { addLesson } from 'src/services/lessonServices';
 
@@ -168,24 +168,22 @@ function LessonForm() {
       const arabicWords = data.table.map((word) => word.arabicWord);
       const fetchWordPromises = arabicWords.map(async (word) => {
         try {
-          console.log(word);
-          const wordResponse = await fetchWord(word);
-          console.log(wordResponse);
-          if (!wordResponse) {
-            const translations = { id: word };
-            const translationPromises = languages.map(async (language) => {
-              translations[language.language] = await translateText(word, language.code);
-            });
-            await Promise.all(translationPromises);
-            console.log(translations);
-          }
+          await fetchWord(word);
         } catch (error) {
-          console.error('Error fetching word:', error);
+          console.log(word);
+          const translations = { id: word };
+          const translationPromises = languages.map(async (language) => {
+            translations[language.language] = await translateText(word, language.code);
+          });
+          await Promise.all(translationPromises);
+          saveWord(translations);
+          if (errorSavingWord) console.log(errorSavingWord);
         }
       });
       await Promise.all(fetchWordPromises);
     }
-
+    saveLesson(data);
+    if (errorSavingLesson) console.log(errorSavingLesson);
     console.log(data);
   };
 

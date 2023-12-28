@@ -3,7 +3,6 @@ import { BACKEND_URL } from 'src/config/constants';
 export const fetchWord = async (word) => {
   const response = await fetch(`${BACKEND_URL}/words/${word}`);
   if (!response.ok) {
-    console.log(response);
     throw new Error();
   }
   return await response.json();
