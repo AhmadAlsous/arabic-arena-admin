@@ -1,7 +1,7 @@
 import { Button, Container, Stack } from '@mui/material';
 import { Link, useParams, useBlocker } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
-import { replaceDashesWithSpaces } from 'src/utils/stringOperations';
+import { generateUUID, replaceDashesWithSpaces } from 'src/utils/stringOperations';
 import { Icon } from '@iconify/react';
 import LessonInfoForm from './LessonInfoForm';
 import { useForm } from 'react-hook-form';
@@ -161,6 +161,8 @@ function LessonForm() {
   });
 
   const onSubmit = async (data) => {
+    let save = true;
+    data.id = generateUUID();
     if (typeof data.text !== 'string') data.text = toHtml(data.text);
     if (typeof data.videoText !== 'string') data.videoText = toHtml(data.videoText);
 
@@ -170,20 +172,26 @@ function LessonForm() {
         try {
           await fetchWord(word);
         } catch (error) {
-          console.log(word);
-          const translations = { id: word };
-          const translationPromises = languages.map(async (language) => {
-            translations[language.language] = await translateText(word, language.code);
-          });
-          await Promise.all(translationPromises);
-          saveWord(translations);
-          if (errorSavingWord) console.log(errorSavingWord);
+          if (error.message.startsWith('NotFoundError')) {
+            const translations = { id: word };
+            const translationPromises = languages.map(async (language) => {
+              translations[language.language] = await translateText(word, language.code);
+            });
+            await Promise.all(translationPromises);
+            saveWord(translations);
+            if (errorSavingWord) save = false;
+          } else {
+            save = false;
+          }
         }
       });
       await Promise.all(fetchWordPromises);
     }
-    saveLesson(data);
-    if (errorSavingLesson) console.log(errorSavingLesson);
+    if (save) {
+      saveLesson(data);
+      if (errorSavingLesson) console.log(errorSavingLesson);
+      else console.log('successsssssssssss');
+    }
     console.log(data);
   };
 

@@ -3,7 +3,12 @@ import { BACKEND_URL } from 'src/config/constants';
 export const fetchWord = async (word) => {
   const response = await fetch(`${BACKEND_URL}/words/${word}`);
   if (!response.ok) {
-    throw new Error();
+    const errorText = await response.json();
+    if (response.status === 404) {
+      throw new Error(`NotFoundError: ${errorText}`);
+    } else {
+      throw new Error(`Error: status ${response.status}, ${errorText}`);
+    }
   }
   return await response.json();
 };
