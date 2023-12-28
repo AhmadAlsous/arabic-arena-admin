@@ -34,6 +34,7 @@ function LessonForm() {
   } = useQuery({
     queryKey: [lessonTitle],
     queryFn: () => fetchLesson(lessonTitle),
+    enabled: !isNew,
   });
   console.log(fetchedLesson);
   const lesson = isNew ? null : fetchedLesson;
@@ -58,47 +59,52 @@ function LessonForm() {
   } = useForm({
     defaultValues: savedForm
       ? JSON.parse(savedForm)
-      : isNew
-        ? {
-            titleArabic: '',
-            titleEnglish: '',
-            level: '',
-            type: '',
-            video: false,
-            videoLink: '',
-            videoText: '',
-            text: '',
-            hasTable: false,
-            table: [
-              {
-                arabicWord: '',
-                transcription: '',
-              },
-            ],
-            hasExercises: false,
-            exercises: [
-              {
-                questionArabic: '',
-                questionEnglish: '',
-                questionType: 'multipleChoice',
-                audioWord: '',
-                options: ['', ''],
-                correctAnswer: [],
-              },
-            ],
-          }
-        : lesson
-          ? {
-              ...lesson,
-              text: convertToRaw(
-                ContentState.createFromBlockArray(htmlToDraft(lesson.text).contentBlocks)
-              ),
-              videoText: convertToRaw(
-                ContentState.createFromBlockArray(htmlToDraft(lesson.videoText).contentBlocks)
-              ),
-            }
-          : {},
+      : {
+          titleArabic: '',
+          titleEnglish: '',
+          level: '',
+          type: '',
+          video: false,
+          videoLink: '',
+          videoText: '',
+          text: '',
+          hasTable: false,
+          table: [
+            {
+              arabicWord: '',
+              transcription: '',
+            },
+          ],
+          hasExercises: false,
+          exercises: [
+            {
+              questionArabic: '',
+              questionEnglish: '',
+              questionType: 'multipleChoice',
+              audioWord: '',
+              options: ['', ''],
+              correctAnswer: [],
+            },
+          ],
+        },
   });
+
+  useEffect(() => {
+    if (!isNew && lesson) {
+      const lessonData = {
+        ...lesson,
+        text: convertToRaw(
+          ContentState.createFromBlockArray(htmlToDraft(lesson.text).contentBlocks)
+        ),
+        videoText: convertToRaw(
+          ContentState.createFromBlockArray(htmlToDraft(lesson.videoText).contentBlocks)
+        ),
+      };
+      for (const [key, value] of Object.entries(lessonData)) {
+        setValue(key, value);
+      }
+    }
+  }, [lesson, setValue, isNew]);
 
   useEffect(() => {
     const subscription = watch(() => {
