@@ -1,5 +1,4 @@
 import { useState } from 'react';
-
 import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -8,24 +7,20 @@ import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import Iconify from 'src/components/iconify';
 import { Icon } from '@iconify/react';
-
-import { lessons } from 'src/_mock/lessons';
-import { quizzes } from 'src/_mock/DummyQuizzes';
-
 import LessonCard from './LessonCard';
 import FilterBar from 'src/components/FilterBar';
 import { Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { fetchLessons } from 'src/services/lessonServices';
+import { fetchQuizzes } from 'src/services/quizServices';
 import Spinner from 'src/components/Spinner';
 import toast from 'react-hot-toast';
 
 export default function LessonsView({ isQuiz = false }) {
   const { isLoading, data, error, refetch } = useQuery({
-    queryKey: ['lessons'],
-    queryFn: fetchLessons,
-    active: !isQuiz,
+    queryKey: [`${isQuiz ? 'quizzes' : 'lessons'}`],
+    queryFn: isQuiz ? fetchQuizzes : fetchLessons,
   });
 
   if (error) {
@@ -50,7 +45,6 @@ export default function LessonsView({ isQuiz = false }) {
   }
 
   localStorage.removeItem('form');
-  const material = isQuiz ? quizzes : lessons;
   const [selectedLevel, setSelectedLevel] = useState('All');
   const [selectedType, setSelectedType] = useState('All');
   const [searchWord, setSearchWord] = useState('');
