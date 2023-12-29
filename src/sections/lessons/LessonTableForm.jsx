@@ -11,6 +11,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import FormErrorMessage from 'src/components/FormErrorMessage';
+import { Controller } from 'react-hook-form';
 
 const InfoIconContainer = styled.div`
   position: relative;
@@ -68,8 +69,7 @@ const StyledIcon = styled(Icon)`
   cursor: pointer;
 `;
 
-function LessonTableForm({ register, errors, setValue, clearErrors, watch, lesson, getValues }) {
-  const isNew = lesson === null;
+function LessonTableForm({ register, errors, setValue, clearErrors, watch, getValues, control }) {
   const tableSwitchValue = watch('hasTable');
   const words = watch('table');
 
@@ -93,16 +93,26 @@ function LessonTableForm({ register, errors, setValue, clearErrors, watch, lesso
   return (
     <FormContainer title="Vocabulary Table">
       <InfoIconContainer>
-        <FormControlLabel
-          id="hasTable"
-          control={
-            <Switch
-              {...register('hasTable')}
-              defaultChecked={isNew ? false : getValues('hasTable')}
+        <Controller
+          name="hasTable"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <FormControlLabel
+              id="hasTable"
+              control={
+                <Switch
+                  {...register('hasTable')}
+                  checked={value}
+                  onChange={(e) => {
+                    setValue('hasTable', e.target.checked);
+                    onChange(e.target.checked);
+                  }}
+                />
+              }
+              label="Add Vocabulary Table &nbsp;"
+              labelPlacement="start"
             />
-          }
-          label="Add Vocabulary Table &nbsp;"
-          labelPlacement="start"
+          )}
         />
         <BigInfoIcon>
           <StyledTooltip

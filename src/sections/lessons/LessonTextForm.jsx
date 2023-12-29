@@ -7,11 +7,11 @@ const EditorContainer = styled.div`
   padding-top: 5px;
 `;
 
-function LessonTextForm({ setValue, text }) {
+function LessonTextForm({ setValue, getValues }) {
   return (
     <FormContainer title="Lesson Content">
       <EditorContainer>
-        <Editor setValue={setValue} text={text} />
+        <Editor setValue={setValue} text={getValues('text')} />
       </EditorContainer>
     </FormContainer>
   );

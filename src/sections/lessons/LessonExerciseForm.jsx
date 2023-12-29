@@ -103,12 +103,10 @@ function LessonExerciseForm({
   errors,
   setValue,
   watch,
-  lesson,
   control,
   getValues,
   isQuiz = false,
 }) {
-  const isNew = lesson === null;
   const exercises = watch(isQuiz ? 'questions' : 'exercises');
   const exerciseSwitchValue = isQuiz ? true : watch('hasExercises');
 
@@ -189,16 +187,26 @@ function LessonExerciseForm({
     <FormContainer title={isQuiz ? 'Questions' : 'Exercises'}>
       {!isQuiz && (
         <InfoIconContainer>
-          <FormControlLabel
-            id="hasExercises"
-            control={
-              <Switch
-                {...register('hasExercises')}
-                defaultChecked={isNew ? false : getValues('hasExercises')}
+          <Controller
+            name="hasExercises"
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <FormControlLabel
+                id="hasExercises"
+                control={
+                  <Switch
+                    {...register('hasExercises')}
+                    checked={value}
+                    onChange={(e) => {
+                      setValue('hasExercises', e.target.checked);
+                      onChange(e.target.checked);
+                    }}
+                  />
+                }
+                label="Add Exercises &nbsp;"
+                labelPlacement="start"
               />
-            }
-            label="Add Exercises &nbsp;"
-            labelPlacement="start"
+            )}
           />
           <BigInfoIcon>
             <StyledTooltip
