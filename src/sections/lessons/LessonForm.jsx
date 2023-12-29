@@ -319,8 +319,8 @@ function LessonForm() {
               errors={errors}
               setValue={setValue}
               watch={watch}
-              lesson={lesson}
               getValues={getValues}
+              control={control}
             />
             <LessonTextForm setValue={setValue} text={getValues('text')} />
             <LessonTableForm

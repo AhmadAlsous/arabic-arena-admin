@@ -5,6 +5,7 @@ import { Tooltip } from '@mui/material';
 import styled from '@emotion/styled';
 import { Icon } from '@iconify/react';
 import Editor from 'src/components/Editor';
+import { Controller } from 'react-hook-form';
 
 const InfoIconContainer = styled.div`
   position: relative;
@@ -40,19 +41,31 @@ const StyledTooltip = styled(({ className, ...props }) => (
   }
 `;
 
-function LessonVideoForm({ register, errors, setValue, watch, lesson, getValues }) {
-  const isNew = lesson === null;
+function LessonVideoForm({ register, errors, setValue, watch, getValues, control }) {
   const videoSwitchValue = watch('video');
   return (
     <FormContainer title="Video Information">
       <InfoIconContainer>
-        <FormControlLabel
-          id="video"
-          control={
-            <Switch {...register('video')} defaultChecked={isNew ? false : !!getValues('video')} />
-          }
-          label="Add Video &nbsp;"
-          labelPlacement="start"
+        <Controller
+          name="video"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <FormControlLabel
+              id="video"
+              control={
+                <Switch
+                  {...register('video')}
+                  checked={value}
+                  onChange={(e) => {
+                    setValue('video', e.target.checked);
+                    onChange(e.target.checked);
+                  }}
+                />
+              }
+              label="Add Video &nbsp;"
+              labelPlacement="start"
+            />
+          )}
         />
         <BigInfoIcon>
           <StyledTooltip
