@@ -19,15 +19,17 @@ import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { fetchLessons } from 'src/services/lessonServices';
 import Spinner from 'src/components/Spinner';
+import toast from 'react-hot-toast';
 
 export default function LessonsView({ isQuiz = false }) {
   const { isLoading, data, error } = useQuery({
     queryKey: ['lessons'],
     queryFn: fetchLessons,
+    active: !isQuiz,
   });
 
   if (error) {
-    console.log(error);
+    toast.error('Error fetching lessons. Please try again.');
   }
 
   localStorage.removeItem('form');

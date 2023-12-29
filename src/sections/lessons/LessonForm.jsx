@@ -20,6 +20,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { addWord, fetchWord } from 'src/services/wordServices';
 import { addLesson, fetchLesson } from 'src/services/lessonServices';
 import Spinner from 'src/components/Spinner';
+import toast from 'react-hot-toast';
 
 function LessonForm() {
   const [isUpdated, setIsUpdated] = useState(false);
@@ -31,6 +32,7 @@ function LessonForm() {
     data: fetchedLesson,
     isLoading: isLoadingLesson,
     error: errorFetchingLesson,
+    refetch: refetchLesson,
   } = useQuery({
     queryKey: [lessonTitle],
     queryFn: () => fetchLesson(lessonTitle),
@@ -90,7 +92,7 @@ function LessonForm() {
   });
 
   useEffect(() => {
-    if (!isNew && lesson) {
+    if (!isNew && lesson && !savedForm) {
       const lessonData = {
         ...lesson,
         text: convertToRaw(
@@ -104,7 +106,7 @@ function LessonForm() {
         setValue(key, value);
       }
     }
-  }, [lesson, setValue, isNew]);
+  }, [lesson, setValue, isNew, savedForm]);
 
   useEffect(() => {
     const subscription = watch(() => {
@@ -177,6 +179,23 @@ function LessonForm() {
     mutationFn: addLesson,
   });
 
+  if (errorFetchingLesson) {
+    toast.error('Error fetching lesson. Please try again.');
+    return (
+      <Stack
+        sx={{
+          height: '100vh',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Button onClick={() => refetchLesson()} sx={{ width: 'auto' }}>
+          TRY AGAIN
+        </Button>
+      </Stack>
+    );
+  }
+
   const onSubmit = async (data) => {
     let save = true;
     data.id = generateUUID();
@@ -206,8 +225,9 @@ function LessonForm() {
     }
     if (save) {
       saveLesson(data);
-      if (errorSavingLesson) console.log(errorSavingLesson);
-      else console.log('successsssssssssss');
+    }
+    if (!save || errorSavingLesson) {
+      toast.error('Error saving lesson. Please try again.');
     }
     console.log(data);
   };
@@ -265,7 +285,7 @@ function LessonForm() {
   return (
     <Container>
       {isLoadingLesson && (
-        <Stack sx={{ mt: 15 }}>
+        <Stack sx={{ mt: 20, mr: 5 }}>
           <Spinner />
         </Stack>
       )}
@@ -279,7 +299,11 @@ function LessonForm() {
             sx={{ mb: 5, mt: 2 }}
           >
             <Typography fontFamily={'Din-round'} variant="h4" sx={{ letterSpacing: '1.5px' }}>
-              {isNew ? 'Create New Lesson' : lesson.titleEnglish}
+              {isNew
+                ? 'Create New Lesson'
+                : lesson?.titleEnglish
+                  ? lesson.titleEnglish
+                  : lessonTitle}
             </Typography>
             <Link to="/lessons">
               <Button>

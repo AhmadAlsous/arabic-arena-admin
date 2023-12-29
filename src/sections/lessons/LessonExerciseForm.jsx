@@ -292,13 +292,11 @@ function LessonExerciseForm({
                   <Controller
                     name={`${isQuiz ? 'questions' : 'exercises'}.${index}.questionType`}
                     control={control}
-                    disabled={exercise.correctAnswer.length > 0}
                     rules={{ required: 'This field is required' }}
                     render={({ field }) => (
                       <Select
                         labelId={`questionType-label-${index}`}
                         label="Question Type"
-                        disabled={exercise.correctAnswer.length > 0}
                         {...field}
                       >
                         <MenuItem value="multipleChoice">Multiple Choice</MenuItem>
@@ -307,11 +305,6 @@ function LessonExerciseForm({
                     )}
                   />
                 </FormControl>
-                {!!errors.exercises?.[index]?.questionType && (
-                  <FormErrorMessage>
-                    {errors.exercises[index].questionType.message}
-                  </FormErrorMessage>
-                )}
               </Stack>
               <InfoIconContainer>
                 <TextField
