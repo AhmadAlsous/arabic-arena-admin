@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Editor as TextEditor } from 'react-draft-wysiwyg';
 import { EditorState, convertFromRaw, convertToRaw } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
@@ -102,13 +102,17 @@ const toolbarOptions = {
 };
 
 function Editor({ setValue, text, isVideo }) {
-  const [editorState, setEditorState] = useState(() => {
+  const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
+
+  useEffect(() => {
     if (text) {
       const contentState = convertFromRaw(text);
-      return EditorState.createWithContent(contentState);
+      const newEditorState = EditorState.createWithContent(contentState);
+      setEditorState(newEditorState);
+    } else {
+      setEditorState(EditorState.createEmpty());
     }
-    return EditorState.createEmpty();
-  });
+  }, [text]);
 
   const onEditorStateChange = (newState) => {
     setEditorState(newState);
