@@ -190,7 +190,7 @@ function LessonForm() {
       toast.error(`Error creating lesson: ${error.message}`);
     },
   });
-  const updateLesson = useMutation({
+  const editLesson = useMutation({
     mutationFn: updateLesson,
     onMutate: () => {
       toast.loading('Updating lesson...');
@@ -257,7 +257,7 @@ function LessonForm() {
       await Promise.all(fetchWordPromises);
     }
     if (isNew) saveLesson.mutate(data);
-    else updateLesson.mutate(data);
+    else editLesson.mutate(data);
     console.log(data);
   };
 
