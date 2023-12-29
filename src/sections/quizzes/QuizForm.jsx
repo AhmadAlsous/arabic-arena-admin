@@ -176,7 +176,7 @@ function QuizForm() {
           <Spinner />
         </Stack>
       )}
-      {!isLoadingQuiz && fetchedQuiz && (
+      {!isLoadingQuiz && (
         <>
           <Stack
             direction="row"
