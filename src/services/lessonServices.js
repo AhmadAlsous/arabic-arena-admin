@@ -33,3 +33,29 @@ export const fetchLesson = async (titleEnglish) => {
   }
   return await response.json();
 };
+
+export const updateLesson = async (lesson) => {
+  const response = await fetch(`${BACKEND_URL}/lessons/${lesson.id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(lesson),
+  });
+  if (!response.ok) {
+    console.log(response);
+    throw new Error();
+  }
+  return await response.json();
+};
+
+export const deleteLesson = async (id) => {
+  const response = await fetch(`${BACKEND_URL}/lessons/${id}`, {
+    method: 'DELETE',
+  });
+  if (!response.ok) {
+    console.log(response);
+    throw new Error();
+  }
+  return await response.json();
+};

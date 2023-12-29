@@ -18,7 +18,7 @@ import { convertToRaw, ContentState } from 'draft-js';
 import BlockerModal from 'src/components/BlockerModal';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { addWord, fetchWord } from 'src/services/wordServices';
-import { addLesson, fetchLesson } from 'src/services/lessonServices';
+import { addLesson, fetchLesson, updateLesson } from 'src/services/lessonServices';
 import Spinner from 'src/components/Spinner';
 import toast from 'react-hot-toast';
 
@@ -170,24 +170,40 @@ function LessonForm() {
       toast.loading('Saving Words...');
     },
     onError: (error) => {
-      toast.dismiss();
+      toast.remove();
       toast.error(`Error saving words: ${error.message}`);
     },
   });
   const saveLesson = useMutation({
     mutationFn: addLesson,
     onMutate: () => {
-      toast.loading('Saving lesson...');
+      toast.loading('Creating lesson...');
     },
     onSuccess: () => {
-      toast.dismiss();
+      toast.remove();
       toast.success('Lesson added successfully.');
       setIsUpdated(false);
       navigate('/lessons');
     },
     onError: (error) => {
-      toast.dismiss();
-      toast.error(`Error saving lesson: ${error.message}`);
+      toast.remove();
+      toast.error(`Error creating lesson: ${error.message}`);
+    },
+  });
+  const updateLesson = useMutation({
+    mutationFn: updateLesson,
+    onMutate: () => {
+      toast.loading('Updating lesson...');
+    },
+    onSuccess: () => {
+      toast.remove();
+      toast.success('Lesson updated successfully.');
+      setIsUpdated(false);
+      navigate('/lessons');
+    },
+    onError: (error) => {
+      toast.remove();
+      toast.error(`Error updating lesson: ${error.message}`);
     },
   });
 
@@ -203,7 +219,7 @@ function LessonForm() {
           }}
           onClick={() => {
             refetchLesson();
-            toast.dismiss();
+            toast.remove();
           }}
         >
           Try again?
@@ -214,7 +230,7 @@ function LessonForm() {
   }
 
   const onSubmit = async (data) => {
-    data.id = generateUUID();
+    if (isNew) data.id = generateUUID();
     if (typeof data.text !== 'string') data.text = toHtml(data.text);
     if (typeof data.videoText !== 'string') data.videoText = toHtml(data.videoText);
 
@@ -232,7 +248,7 @@ function LessonForm() {
             await Promise.all(translationPromises);
             saveWord.mutate(translations);
           } else {
-            toast.dismiss();
+            toast.remove();
             toast.error(`Error saving lesson: ${error.message}`);
             return;
           }
@@ -240,7 +256,8 @@ function LessonForm() {
       });
       await Promise.all(fetchWordPromises);
     }
-    saveLesson.mutate(data);
+    if (isNew) saveLesson.mutate(data);
+    else updateLesson.mutate(data);
     console.log(data);
   };
 

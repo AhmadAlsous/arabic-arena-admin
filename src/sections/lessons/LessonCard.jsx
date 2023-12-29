@@ -5,6 +5,9 @@ import { Icon } from '@iconify/react';
 import { Link } from 'react-router-dom';
 import { replaceSpacesWithDashes } from 'src/utils/stringOperations';
 import Modal from 'src/components/Modal';
+import { QueryClient, useMutation } from '@tanstack/react-query';
+import { deleteLesson } from 'src/services/lessonServices';
+import toast from 'react-hot-toast';
 
 const StyledBox = styled(Box)`
   position: relative;
@@ -55,6 +58,21 @@ const HoverContent = styled.div`
 
 export default function LessonCard({ lesson, isQuiz }) {
   const [imageLoaded, setImageLoaded] = useState(!!lesson.imageLink);
+  const removeLesson = useMutation({
+    mutationFn: deleteLesson,
+    onMutate: () => {
+      toast.loading('Deleting lesson...');
+    },
+    onSuccess: () => {
+      toast.remove();
+      toast.success('Lesson deleted successfully.');
+      QueryClient.invalidateQueries('lessons');
+    },
+    onError: (error) => {
+      toast.remove();
+      toast.error(`Error deleting lesson: ${error.message}`);
+    },
+  });
   const renderContent = imageLoaded ? (
     <Box
       component="img"
@@ -100,6 +118,7 @@ export default function LessonCard({ lesson, isQuiz }) {
         </Typography>
         <Modal
           btn="Delete"
+          onSubmit={() => removeLesson.mutate(lesson.id)}
           trigger={
             <Button color="error">
               <Icon icon="ic:outline-delete" fontSize={30} />
