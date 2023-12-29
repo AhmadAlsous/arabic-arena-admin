@@ -26,7 +26,7 @@ export default function LessonsView({ isQuiz = false }) {
   if (error) {
     toast.error(
       <Stack direction="row" sx={{ mr: '-15px' }}>
-        <p>Error fetching lessons.</p>
+        <p>Error fetching {isQuiz ? 'quizzes' : 'lessons'}.</p>
         <Button
           sx={{
             textTransform: 'none',

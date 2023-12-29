@@ -7,6 +7,7 @@ import { replaceSpacesWithDashes } from 'src/utils/stringOperations';
 import Modal from 'src/components/Modal';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteLesson } from 'src/services/lessonServices';
+import { deleteQuiz } from 'src/services/quizServices';
 import toast from 'react-hot-toast';
 
 const StyledBox = styled(Box)`
@@ -59,21 +60,21 @@ const HoverContent = styled.div`
 export default function LessonCard({ lesson, isQuiz }) {
   const queryClient = useQueryClient();
   const [imageLoaded, setImageLoaded] = useState(!!lesson.imageLink);
-  const removeLesson = useMutation({
-    mutationFn: deleteLesson,
+  const remove = useMutation({
+    mutationFn: isQuiz ? deleteQuiz : deleteLesson,
     onMutate: () => {
-      toast.loading('Deleting lesson...');
+      toast.loading(`Deleting ${isQuiz ? 'quiz' : 'lesson'}...`);
     },
     onSuccess: () => {
       toast.remove();
-      toast.success('Lesson deleted successfully.');
+      toast.success(`${isQuiz ? 'Quiz' : 'Lesson'} deleted successfully.`);
       queryClient.invalidateQueries({
-        queryKey: ['lessons'],
+        queryKey: [`${isQuiz ? 'quizzes' : 'lessons'}`],
       });
     },
     onError: (error) => {
       toast.remove();
-      toast.error(`Error deleting lesson: ${error.message}`);
+      toast.error(`Error deleting ${isQuiz ? 'quiz' : 'lesson'}: ${error.message}`);
     },
   });
   const renderContent = imageLoaded ? (
@@ -121,7 +122,7 @@ export default function LessonCard({ lesson, isQuiz }) {
         </Typography>
         <Modal
           btn="Delete"
-          onSubmit={() => removeLesson.mutate(lesson.id)}
+          onSubmit={() => remove.mutate(lesson.id)}
           trigger={
             <Button color="error">
               <Icon icon="ic:outline-delete" fontSize={30} />
