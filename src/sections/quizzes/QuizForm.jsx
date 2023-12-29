@@ -53,25 +53,23 @@ function QuizForm() {
   } = useForm({
     defaultValues: savedForm
       ? JSON.parse(savedForm)
-      : isNew
-        ? {
-            titleArabic: '',
-            titleEnglish: '',
-            level: '',
-            type: '',
-            time: '',
-            questions: [
-              {
-                questionArabic: '',
-                questionEnglish: '',
-                questionType: 'multipleChoice',
-                audioWord: '',
-                options: ['', ''],
-                correctAnswer: [],
-              },
-            ],
-          }
-        : quiz,
+      : {
+          titleArabic: '',
+          titleEnglish: '',
+          level: '',
+          type: '',
+          time: '',
+          questions: [
+            {
+              questionArabic: '',
+              questionEnglish: '',
+              questionType: 'multipleChoice',
+              audioWord: '',
+              options: ['', ''],
+              correctAnswer: [],
+            },
+          ],
+        },
   });
 
   useEffect(() => {
@@ -204,7 +202,6 @@ function QuizForm() {
               errors={errors}
               setValue={setValue}
               watch={watch}
-              lesson={quiz}
               control={control}
               isQuiz={true}
             />
