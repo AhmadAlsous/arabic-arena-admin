@@ -1,5 +1,5 @@
 import { Button, Container, Stack } from '@mui/material';
-import { Link, useParams, useBlocker } from 'react-router-dom';
+import { Link, useParams, useBlocker, useNavigate } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import { generateUUID, replaceDashesWithSpaces } from 'src/utils/stringOperations';
 import { Icon } from '@iconify/react';
@@ -27,6 +27,7 @@ function LessonForm() {
   let lessonTitle = useParams()?.lesson;
   const isNew = lessonTitle === undefined;
   if (!isNew) lessonTitle = replaceDashesWithSpaces(lessonTitle);
+  const navigate = useNavigate();
 
   const {
     data: fetchedLesson,
@@ -38,7 +39,6 @@ function LessonForm() {
     queryFn: () => fetchLesson(lessonTitle),
     enabled: !isNew,
   });
-  console.log(fetchedLesson);
   const lesson = isNew ? null : fetchedLesson;
   const savedForm = localStorage.getItem('form');
 
@@ -164,40 +164,55 @@ function LessonForm() {
     return doc.body.innerHTML;
   };
 
-  const {
-    mutate: saveWord,
-    isLoading: isSavingWord,
-    error: errorSavingWord,
-  } = useMutation({
+  const saveWord = useMutation({
     mutationFn: addWord,
+    onMutate: () => {
+      toast.loading('Saving Words...');
+    },
+    onError: (error) => {
+      toast.dismiss();
+      toast.error(`Error saving words: ${error.message}`);
+    },
   });
-  const {
-    mutate: saveLesson,
-    isLoading: isSavingLesson,
-    error: errorSavingLesson,
-  } = useMutation({
+  const saveLesson = useMutation({
     mutationFn: addLesson,
+    onMutate: () => {
+      toast.loading('Saving lesson...');
+    },
+    onSuccess: () => {
+      toast.dismiss();
+      toast.success('Lesson added successfully.');
+      navigate('/lessons');
+    },
+    onError: (error) => {
+      toast.dismiss();
+      toast.error(`Error saving lesson: ${error.message}`);
+    },
   });
 
   if (errorFetchingLesson) {
-    toast.error('Error fetching lesson. Please try again.');
-    return (
-      <Stack
-        sx={{
-          height: '100vh',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <Button onClick={() => refetchLesson()} sx={{ width: 'auto' }}>
-          TRY AGAIN
+    toast.error(
+      <Stack direction="row" sx={{ mr: '-15px' }}>
+        <p>Error fetching lesson.</p>
+        <Button
+          sx={{
+            textTransform: 'none',
+            color: 'black',
+            fontSize: '0.95rem',
+          }}
+          onClick={() => {
+            refetchLesson();
+            toast.dismiss();
+          }}
+        >
+          Try again?
         </Button>
       </Stack>
     );
+    return;
   }
 
   const onSubmit = async (data) => {
-    let save = true;
     data.id = generateUUID();
     if (typeof data.text !== 'string') data.text = toHtml(data.text);
     if (typeof data.videoText !== 'string') data.videoText = toHtml(data.videoText);
@@ -214,21 +229,17 @@ function LessonForm() {
               translations[language.language] = await translateText(word, language.code);
             });
             await Promise.all(translationPromises);
-            saveWord(translations);
-            if (errorSavingWord) save = false;
+            saveWord.mutate(translations);
           } else {
-            save = false;
+            toast.dismiss();
+            toast.error(`Error saving lesson: ${error.message}`);
+            return;
           }
         }
       });
       await Promise.all(fetchWordPromises);
     }
-    if (save) {
-      saveLesson(data);
-    }
-    if (!save || errorSavingLesson) {
-      toast.error('Error saving lesson. Please try again.');
-    }
+    saveLesson.mutate(data);
     console.log(data);
   };
 

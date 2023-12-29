@@ -22,14 +22,31 @@ import Spinner from 'src/components/Spinner';
 import toast from 'react-hot-toast';
 
 export default function LessonsView({ isQuiz = false }) {
-  const { isLoading, data, error } = useQuery({
+  const { isLoading, data, error, refetch } = useQuery({
     queryKey: ['lessons'],
     queryFn: fetchLessons,
     active: !isQuiz,
   });
 
   if (error) {
-    toast.error('Error fetching lessons. Please try again.');
+    toast.error(
+      <Stack direction="row" sx={{ mr: '-15px' }}>
+        <p>Error fetching lessons.</p>
+        <Button
+          sx={{
+            textTransform: 'none',
+            color: 'black',
+            fontSize: '0.95rem',
+          }}
+          onClick={() => {
+            refetch();
+            toast.dismiss();
+          }}
+        >
+          Try again?
+        </Button>
+      </Stack>
+    );
   }
 
   localStorage.removeItem('form');

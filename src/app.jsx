@@ -14,10 +14,8 @@ export default function App() {
         <Router />
       </ThemeProvider>
       <Toaster
-        toastOptions={{
-          style: {
-            marginTop: '50px',
-          },
+        containerStyle={{
+          top: 85,
         }}
       />
       <ReactQueryDevtools initialIsOpen={false} />
