@@ -182,6 +182,7 @@ function LessonForm() {
     onSuccess: () => {
       toast.dismiss();
       toast.success('Lesson added successfully.');
+      localStorage.removeItem('form');
       navigate('/lessons');
     },
     onError: (error) => {

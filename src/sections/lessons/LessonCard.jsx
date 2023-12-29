@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Button, Card, Stack, Typography } from '@mui/material';
 import styled from '@emotion/styled';
 import { Icon } from '@iconify/react';
@@ -54,9 +54,11 @@ const HoverContent = styled.div`
 `;
 
 export default function LessonCard({ lesson, isQuiz }) {
-  const renderContent = lesson.imageLink ? (
+  const [imageLoaded, setImageLoaded] = useState(!!lesson.imageLink);
+  const renderContent = imageLoaded ? (
     <Box
       component="img"
+      onError={() => setImageLoaded(false)}
       alt={lesson.titleEnglish}
       src={lesson.imageLink}
       sx={{
