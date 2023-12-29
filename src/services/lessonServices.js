@@ -46,7 +46,8 @@ export const updateLesson = async (lesson) => {
     console.log(response);
     throw new Error();
   }
-  return await response.json();
+  const text = await response.text();
+  return text ? JSON.parse(text) : {};
 };
 
 export const deleteLesson = async (id) => {
@@ -57,5 +58,6 @@ export const deleteLesson = async (id) => {
     console.log(response);
     throw new Error();
   }
-  return await response.json();
+  const text = await response.text();
+  return text ? JSON.parse(text) : {};
 };
