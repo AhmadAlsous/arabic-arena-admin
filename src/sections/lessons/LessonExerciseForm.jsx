@@ -17,7 +17,6 @@ import {
 } from '@mui/material';
 import styled from '@emotion/styled';
 import { Icon } from '@iconify/react';
-
 import Table from '@mui/material/Table';
 import MuiTableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -98,15 +97,7 @@ const DeleteIcon = styled(Icon)`
   top: 4px;
 `;
 
-function LessonExerciseForm({
-  register,
-  errors,
-  setValue,
-  watch,
-  control,
-  getValues,
-  isQuiz = false,
-}) {
+function LessonExerciseForm({ register, errors, setValue, watch, control, isQuiz = false }) {
   const exercises = watch(isQuiz ? 'questions' : 'exercises');
   const exerciseSwitchValue = isQuiz ? true : watch('hasExercises');
 

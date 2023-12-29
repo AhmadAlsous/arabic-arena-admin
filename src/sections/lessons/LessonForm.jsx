@@ -367,7 +367,6 @@ function LessonForm() {
               setValue={setValue}
               watch={watch}
               control={control}
-              getValues={getValues}
             />
             <Stack direction="row" alignItems="center" justifyContent="flex-end">
               <Button variant="contained" color="primary" type="submit" onClick={handleClick}>
