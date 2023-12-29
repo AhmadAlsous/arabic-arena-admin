@@ -183,7 +183,7 @@ function LessonForm() {
       toast.remove();
       toast.success('Lesson added successfully.');
       setIsUpdated(false);
-      navigate('/lessons');
+      setTimeout(() => navigate('/lessons'), 500);
     },
     onError: (error) => {
       toast.remove();
@@ -199,7 +199,7 @@ function LessonForm() {
       toast.remove();
       toast.success('Lesson updated successfully.');
       setIsUpdated(false);
-      navigate('/lessons');
+      setTimeout(() => navigate('/lessons'), 500);
     },
     onError: (error) => {
       toast.remove();

@@ -5,7 +5,7 @@ import { Icon } from '@iconify/react';
 import { Link } from 'react-router-dom';
 import { replaceSpacesWithDashes } from 'src/utils/stringOperations';
 import Modal from 'src/components/Modal';
-import { QueryClient, useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteLesson } from 'src/services/lessonServices';
 import toast from 'react-hot-toast';
 
@@ -57,6 +57,7 @@ const HoverContent = styled.div`
 `;
 
 export default function LessonCard({ lesson, isQuiz }) {
+  const queryClient = useQueryClient();
   const [imageLoaded, setImageLoaded] = useState(!!lesson.imageLink);
   const removeLesson = useMutation({
     mutationFn: deleteLesson,
@@ -66,7 +67,9 @@ export default function LessonCard({ lesson, isQuiz }) {
     onSuccess: () => {
       toast.remove();
       toast.success('Lesson deleted successfully.');
-      QueryClient.invalidateQueries('lessons');
+      queryClient.invalidateQueries({
+        queryKey: ['lessons'],
+      });
     },
     onError: (error) => {
       toast.remove();
