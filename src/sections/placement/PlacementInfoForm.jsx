@@ -41,7 +41,20 @@ function PlacementInfoForm({ register, errors }) {
                 size="normal"
                 error={!!errors.advanced}
                 {...register('advanced', {
+                  setValueAs: (value) => parseInt(value),
                   required: 'This field is required',
+                  min: {
+                    value: 1,
+                    message: 'Please enter a valid minimum score',
+                  },
+                  max: {
+                    value: 100,
+                    message: 'The score must be less than 100',
+                  },
+                  validate: {
+                    positive: (value) =>
+                      parseInt(value) > 0 || 'Please enter a valid minimum score',
+                  },
                 })}
               />
             </Input>
@@ -63,7 +76,22 @@ function PlacementInfoForm({ register, errors }) {
                 fullWidth
                 size="normal"
                 error={!!errors.intermediate}
-                {...register('intermediate', { required: 'This field is required' })}
+                {...register('intermediate', {
+                  setValueAs: (value) => parseInt(value),
+                  required: 'This field is required',
+                  min: {
+                    value: 1,
+                    message: 'Please enter a valid minimum score',
+                  },
+                  max: {
+                    value: 100,
+                    message: 'The score must be less than 100',
+                  },
+                  validate: {
+                    positive: (value) =>
+                      parseInt(value) > 0 || 'Please enter a valid minimum score',
+                  },
+                })}
               />
             </Input>
             <InfoIcon>

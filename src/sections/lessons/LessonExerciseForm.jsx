@@ -174,6 +174,11 @@ function LessonExerciseForm({ register, errors, setValue, watch, control, isQuiz
     }
   };
 
+  const handleQuestionTypeChange = (index, newType) => {
+    setValue(`${isQuiz ? 'questions' : 'exercises'}.${index}.correctAnswer`, []);
+    setValue(`${isQuiz ? 'questions' : 'exercises'}.${index}.questionType`, newType);
+  };
+
   return (
     <FormContainer title={isQuiz ? 'Questions' : 'Exercises'}>
       {!isQuiz && (
@@ -297,6 +302,7 @@ function LessonExerciseForm({ register, errors, setValue, watch, control, isQuiz
                         labelId={`questionType-label-${index}`}
                         label="Question Type"
                         {...field}
+                        onChange={(e) => handleQuestionTypeChange(index, e.target.value)}
                       >
                         <MenuItem value="multipleChoice">Multiple Choice</MenuItem>
                         <MenuItem value="allThatApply">All That Apply</MenuItem>

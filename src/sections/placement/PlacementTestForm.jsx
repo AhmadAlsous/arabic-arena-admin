@@ -1,16 +1,28 @@
 import { Button, Container, Stack } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { useForm } from 'react-hook-form';
-import { quiz } from 'src/_mock/DummyQuiz';
 import LessonExerciseForm from '../lessons/LessonExerciseForm';
 import PlacementInfoForm from './PlacementInfoForm';
 import { useBlocker } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import BlockerModal from 'src/components/BlockerModal';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { fetchPlacementTest } from 'src/services/placementTestServices';
+import { updatePlacementTest } from 'src/services/placementTestServices';
+import toast from 'react-hot-toast';
+import Spinner from 'src/components/Spinner';
 
 function PlacementTestForm() {
   const [isUpdated, setIsUpdated] = useState(false);
-  const dummyQuiz = quiz;
+  const {
+    data: test,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ['placementTest'],
+    queryFn: fetchPlacementTest,
+  });
   const savedForm = localStorage.getItem('form');
 
   let blocker = useBlocker(
@@ -50,6 +62,14 @@ function PlacementTestForm() {
   });
 
   useEffect(() => {
+    if (test && !savedForm) {
+      for (const [key, value] of Object.entries(test)) {
+        setValue(key, value);
+      }
+    }
+  }, [test, setValue, savedForm]);
+
+  useEffect(() => {
     const subscription = watch(() => {
       setIsUpdated(true);
       localStorage.setItem('form', JSON.stringify(getValues()));
@@ -57,7 +77,47 @@ function PlacementTestForm() {
     return () => subscription.unsubscribe();
   }, [watch, getValues]);
 
+  const editTest = useMutation({
+    mutationFn: updatePlacementTest,
+    onMutate: () => {
+      toast.loading('Updating placement test...');
+    },
+    onSuccess: () => {
+      toast.remove();
+      toast.success('Placement Test updated successfully.');
+      setIsUpdated(false);
+    },
+    onError: (error) => {
+      toast.remove();
+      toast.error(`Error updating placement test: ${error.message}`);
+    },
+  });
+
+  if (error) {
+    toast.error(
+      <Stack direction="row" sx={{ mr: '-15px' }}>
+        <p>Error fetching placement test.</p>
+        <Button
+          sx={{
+            textTransform: 'none',
+            color: 'black',
+            fontSize: '0.95rem',
+          }}
+          onClick={() => {
+            refetch();
+            toast.remove();
+          }}
+        >
+          Try again?
+        </Button>
+      </Stack>
+    );
+    return;
+  }
+
   const onSubmit = (data) => {
+    data.id = '1';
+    editTest.mutate(data);
     console.log(data);
   };
 
@@ -82,37 +142,45 @@ function PlacementTestForm() {
 
   return (
     <Container>
-      <Stack
-        direction="row"
-        alignItems="center"
-        flexWrap="wrap-reverse"
-        justifyContent="space-between"
-        sx={{ mb: 5, mt: 2 }}
-      >
-        <Typography fontFamily={'Din-round'} variant="h4" sx={{ letterSpacing: '1.5px' }}>
-          Placement Test
-        </Typography>
-      </Stack>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <PlacementInfoForm register={register} errors={errors} />
-        <LessonExerciseForm
-          register={register}
-          errors={errors}
-          setValue={setValue}
-          watch={watch}
-          lesson={dummyQuiz}
-          control={control}
-          isQuiz={true}
-        />
-        <Stack direction="row" alignItems="center" justifyContent="flex-end">
-          <Button variant="contained" color="primary" type="submit" onClick={handleClick}>
-            Update Test
-          </Button>
+      {isLoading && (
+        <Stack sx={{ mt: 20, mr: 5 }}>
+          <Spinner />
         </Stack>
-      </form>
-      {blocker.state === 'blocked' ? (
-        <BlockerModal cancel={() => blocker.reset()} proceed={handleLeave} />
-      ) : null}
+      )}
+      {!isLoading && (
+        <>
+          <Stack
+            direction="row"
+            alignItems="center"
+            flexWrap="wrap-reverse"
+            justifyContent="space-between"
+            sx={{ mb: 5, mt: 2 }}
+          >
+            <Typography fontFamily={'Din-round'} variant="h4" sx={{ letterSpacing: '1.5px' }}>
+              Placement Test
+            </Typography>
+          </Stack>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <PlacementInfoForm register={register} errors={errors} />
+            <LessonExerciseForm
+              register={register}
+              errors={errors}
+              setValue={setValue}
+              watch={watch}
+              control={control}
+              isQuiz={true}
+            />
+            <Stack direction="row" alignItems="center" justifyContent="flex-end">
+              <Button variant="contained" color="primary" type="submit" onClick={handleClick}>
+                Update Test
+              </Button>
+            </Stack>
+          </form>
+          {blocker.state === 'blocked' ? (
+            <BlockerModal cancel={() => blocker.reset()} proceed={handleLeave} />
+          ) : null}
+        </>
+      )}
     </Container>
   );
 }
