@@ -7,8 +7,7 @@ import { useBlocker } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import BlockerModal from 'src/components/BlockerModal';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { fetchPlacementTest } from 'src/services/placementTestServices';
-import { updatePlacementTest } from 'src/services/placementTestServices';
+import { fetchPlacementTest, updatePlacementTest } from 'src/services/placementServices';
 import toast from 'react-hot-toast';
 import Spinner from 'src/components/Spinner';
 
