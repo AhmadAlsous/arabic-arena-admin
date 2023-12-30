@@ -1,6 +1,6 @@
 import { BACKEND_URL } from 'src/config/constants';
 
-const getPlacementTest = async () => {
+export const fetchPlacementTest = async () => {
   const response = await fetch(`${BACKEND_URL}/placement/1`);
   if (!response.ok) {
     console.log(response);
@@ -9,7 +9,7 @@ const getPlacementTest = async () => {
   return await response.json();
 };
 
-const updatePlacementTest = async (placementTest) => {
+export const updatePlacementTest = async (placementTest) => {
   const response = await fetch(`${BACKEND_URL}/placement/1`, {
     method: 'PUT',
     headers: {
