@@ -10,7 +10,6 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { fetchPlacementTest, updatePlacementTest } from 'src/services/placementServices';
 import toast from 'react-hot-toast';
 import Spinner from 'src/components/Spinner';
-import SpinnerMini from 'src/components/SpinnerMini';
 
 function PlacementTestForm() {
   const [isUpdated, setIsUpdated] = useState(false);
@@ -185,7 +184,7 @@ function PlacementTestForm() {
                 onClick={handleClick}
                 disabled={testIsLoading}
               >
-                {testIsLoading ? <SpinnerMini /> : 'Update Test'}
+                Update Test
               </Button>
             </Stack>
           </form>

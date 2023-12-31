@@ -21,7 +21,6 @@ import { addWord, fetchWord } from 'src/services/wordServices';
 import { addLesson, fetchLesson, updateLesson } from 'src/services/lessonServices';
 import Spinner from 'src/components/Spinner';
 import toast from 'react-hot-toast';
-import SpinnerMini from 'src/components/SpinnerMini';
 
 function LessonForm() {
   const [isUpdated, setIsUpdated] = useState(false);
@@ -387,9 +386,9 @@ function LessonForm() {
                 color="primary"
                 type="submit"
                 onClick={handleClick}
-                disabled={isLoadingLesson}
+                disabled={lessonIsLoading}
               >
-                {isLoadingLesson ? <SpinnerMini /> : isNew ? 'Create Lesson' : 'Update Lesson'}
+                {isNew ? 'Create Lesson' : 'Update Lesson'}
               </Button>
             </Stack>
           </form>

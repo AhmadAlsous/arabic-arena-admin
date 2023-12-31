@@ -12,7 +12,6 @@ import { addQuiz, fetchQuiz, updateQuiz } from 'src/services/quizServices';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import Spinner from 'src/components/Spinner';
-import SpinnerMini from 'src/components/SpinnerMini';
 
 function QuizForm() {
   const [isUpdated, setIsUpdated] = useState(false);
@@ -224,9 +223,9 @@ function QuizForm() {
                 color="primary"
                 type="submit"
                 onClick={handleClick}
-                disabled={isLoadingQuiz}
+                disabled={quizIsLoading}
               >
-                {isLoadingQuiz ? <SpinnerMini /> : isNew ? 'Create Quiz' : 'Update Quiz'}
+                {isNew ? 'Create Quiz' : 'Update Quiz'}
               </Button>
             </Stack>
           </form>
