@@ -44,7 +44,7 @@ function QuizForm() {
     setValue,
     setError,
     clearErrors,
-    formState: { errors, touchedFields },
+    formState: { errors, touchedFields, isDirty },
   } = useForm({
     defaultValues: savedForm
       ? JSON.parse(savedForm)
@@ -224,7 +224,7 @@ function QuizForm() {
                 color="primary"
                 type="submit"
                 onClick={handleClick}
-                disabled={quizIsLoading || Object.keys(touchedFields).length == 0}
+                disabled={quizIsLoading || !isDirty}
               >
                 {isNew ? 'Create Quiz' : 'Update Quiz'}
               </Button>

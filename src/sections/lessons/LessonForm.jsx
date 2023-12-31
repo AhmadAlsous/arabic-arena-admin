@@ -52,7 +52,7 @@ function LessonForm() {
     setValue,
     setError,
     clearErrors,
-    formState: { errors, touchedFields },
+    formState: { errors, touchedFields, isDirty },
   } = useForm({
     defaultValues: savedForm
       ? JSON.parse(savedForm)
@@ -387,7 +387,7 @@ function LessonForm() {
                 color="primary"
                 type="submit"
                 onClick={handleClick}
-                disabled={lessonIsLoading || Object.keys(touchedFields).length == 0}
+                disabled={lessonIsLoading || !isDirty}
               >
                 {isNew ? 'Create Lesson' : 'Update Lesson'}
               </Button>

@@ -34,7 +34,7 @@ function PlacementTestForm() {
     setValue,
     setError,
     clearErrors,
-    formState: { errors, touchedFields },
+    formState: { errors, touchedFields, isDirty },
   } = useForm({
     defaultValues: savedForm
       ? JSON.parse(savedForm)
@@ -186,7 +186,7 @@ function PlacementTestForm() {
                 color="primary"
                 type="submit"
                 onClick={handleClick}
-                disabled={testIsLoading || Object.keys(touchedFields).length == 0}
+                disabled={testIsLoading || !isDirty}
               >
                 Update Test
               </Button>
