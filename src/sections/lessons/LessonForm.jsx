@@ -48,9 +48,6 @@ function LessonForm() {
     [isUpdated]
   );
 
-  const isLoadingAny =
-    isLoadingLesson || saveWord.isLoading || saveLesson.isLoading || editLesson.isLoading;
-
   const {
     register,
     handleSubmit,
@@ -314,6 +311,9 @@ function LessonForm() {
     blocker.proceed();
     localStorage.removeItem('form');
   };
+
+  const isLoadingAny =
+    isLoadingLesson || saveWord.isLoading || saveLesson.isLoading || editLesson.isLoading;
 
   return (
     <Container>

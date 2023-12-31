@@ -94,6 +94,10 @@ function PlacementTestForm() {
     },
   });
 
+  useEffect(() => {
+    console.log(editTest.isLoading);
+  }, [editTest.isLoading]);
+
   if (error) {
     toast.error(
       <Stack direction="row" sx={{ mr: '-15px' }}>
