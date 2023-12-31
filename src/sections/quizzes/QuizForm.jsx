@@ -12,9 +12,11 @@ import { addQuiz, fetchQuiz, updateQuiz } from 'src/services/quizServices';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import Spinner from 'src/components/Spinner';
+import SpinnerMini from 'src/components/SpinnerMini';
 
 function QuizForm() {
   const [isUpdated, setIsUpdated] = useState(false);
+  const [quizIsLoading, setQuizIsLoading] = useState(false);
   let quizTitle = useParams()?.quiz;
   const isNew = quizTitle === undefined;
   if (!isNew) quizTitle = replaceDashesWithSpaces(quizTitle);
@@ -91,9 +93,11 @@ function QuizForm() {
   const saveQuiz = useMutation({
     mutationFn: addQuiz,
     onMutate: () => {
+      setQuizIsLoading(true);
       toast.loading('Creating quiz...');
     },
     onSuccess: () => {
+      setQuizIsLoading(false);
       toast.remove();
       toast.success('Quiz added successfully.', {
         duration: 5000,
@@ -102,6 +106,7 @@ function QuizForm() {
       setTimeout(() => navigate('/quizzes'), 500);
     },
     onError: (error) => {
+      setQuizIsLoading(false);
       toast.remove();
       toast.error(`Error creating quiz: ${error.message}`, { duration: 5000 });
     },
@@ -109,9 +114,11 @@ function QuizForm() {
   const editQuiz = useMutation({
     mutationFn: updateQuiz,
     onMutate: () => {
+      setQuizIsLoading(true);
       toast.loading('Updating quiz...');
     },
     onSuccess: () => {
+      setQuizIsLoading(false);
       toast.remove();
       toast.success('Quiz updated successfully.', {
         duration: 5000,
@@ -120,6 +127,7 @@ function QuizForm() {
       setTimeout(() => navigate('/quizzes'), 500);
     },
     onError: (error) => {
+      setQuizIsLoading(false);
       toast.remove();
       toast.error(`Error updating quiz: ${error.message}`, { duration: 5000 });
     },
@@ -211,8 +219,14 @@ function QuizForm() {
               isQuiz={true}
             />
             <Stack direction="row" alignItems="center" justifyContent="flex-end">
-              <Button variant="contained" color="primary" type="submit" onClick={handleClick}>
-                {isNew ? 'Create Quiz' : 'Update Quiz'}
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                onClick={handleClick}
+                disabled={isLoadingQuiz}
+              >
+                {isLoadingQuiz ? <SpinnerMini /> : isNew ? 'Create Quiz' : 'Update Quiz'}
               </Button>
             </Stack>
           </form>

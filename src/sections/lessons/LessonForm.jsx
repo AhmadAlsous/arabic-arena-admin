@@ -21,9 +21,11 @@ import { addWord, fetchWord } from 'src/services/wordServices';
 import { addLesson, fetchLesson, updateLesson } from 'src/services/lessonServices';
 import Spinner from 'src/components/Spinner';
 import toast from 'react-hot-toast';
+import SpinnerMini from 'src/components/SpinnerMini';
 
 function LessonForm() {
   const [isUpdated, setIsUpdated] = useState(false);
+  const [lessonIsLoading, setLessonIsLoading] = useState(false);
   let lessonTitle = useParams()?.lesson;
   const isNew = lessonTitle === undefined;
   if (!isNew) lessonTitle = replaceDashesWithSpaces(lessonTitle);
@@ -167,9 +169,11 @@ function LessonForm() {
   const saveWord = useMutation({
     mutationFn: addWord,
     onMutate: () => {
+      setLessonIsLoading(true);
       toast.loading('Saving Words...');
     },
     onError: (error) => {
+      setLessonIsLoading(false);
       toast.remove();
       toast.error(`Error saving words: ${error.message}`, { duration: 5000 });
     },
@@ -177,15 +181,18 @@ function LessonForm() {
   const saveLesson = useMutation({
     mutationFn: addLesson,
     onMutate: () => {
+      setLessonIsLoading(true);
       toast.loading('Creating lesson...');
     },
     onSuccess: () => {
+      setLessonIsLoading(false);
       toast.remove();
       toast.success('Lesson added successfully.', { duration: 5000 });
       setIsUpdated(false);
       setTimeout(() => navigate('/lessons'), 500);
     },
     onError: (error) => {
+      setLessonIsLoading(false);
       toast.remove();
       toast.error(`Error creating lesson: ${error.message}`, { duration: 5000 });
     },
@@ -193,15 +200,18 @@ function LessonForm() {
   const editLesson = useMutation({
     mutationFn: updateLesson,
     onMutate: () => {
+      setLessonIsLoading(true);
       toast.loading('Updating lesson...');
     },
     onSuccess: () => {
+      setLessonIsLoading(false);
       toast.remove();
       toast.success('Lesson updated successfully.', { duration: 5000 });
       setIsUpdated(false);
       setTimeout(() => navigate('/lessons'), 500);
     },
     onError: (error) => {
+      setLessonIsLoading(false);
       toast.remove();
       toast.error(`Error updating lesson: ${error.message}`, { duration: 5000 });
     },
@@ -239,6 +249,7 @@ function LessonForm() {
       const arabicWords = data.table.map((word) => word.arabicWord);
       const fetchWordPromises = arabicWords.map(async (word) => {
         try {
+          setLessonIsLoading(true);
           await fetchWord(word);
         } catch (error) {
           if (error.message.startsWith('NotFoundError')) {
@@ -249,6 +260,7 @@ function LessonForm() {
             await Promise.all(translationPromises);
             saveWord.mutate(translations);
           } else {
+            setLessonIsLoading(false);
             toast.remove();
             toast.error(`Error saving lesson: ${error.message}`, { duration: 5000 });
             return;
@@ -370,8 +382,14 @@ function LessonForm() {
               control={control}
             />
             <Stack direction="row" alignItems="center" justifyContent="flex-end">
-              <Button variant="contained" color="primary" type="submit" onClick={handleClick}>
-                {isNew ? 'Create Lesson' : 'Update Lesson'}
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                onClick={handleClick}
+                disabled={isLoadingLesson}
+              >
+                {isLoadingLesson ? <SpinnerMini /> : isNew ? 'Create Lesson' : 'Update Lesson'}
               </Button>
             </Stack>
           </form>

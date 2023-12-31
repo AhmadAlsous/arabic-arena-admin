@@ -14,5 +14,5 @@ const Spinner = css`
 `;
 
 export default function SpinnerMini() {
-  return <CircularProgress css={Spinner} />;
+  return <CircularProgress css={Spinner} size={20} />;
 }
