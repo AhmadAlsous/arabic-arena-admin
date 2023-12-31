@@ -14,7 +14,6 @@ import toast from 'react-hot-toast';
 import Spinner from 'src/components/Spinner';
 
 function QuizForm() {
-  const [isUpdated, setIsUpdated] = useState(false);
   const [quizIsLoading, setQuizIsLoading] = useState(false);
   let quizTitle = useParams()?.quiz;
   const isNew = quizTitle === undefined;
@@ -35,12 +34,6 @@ function QuizForm() {
   const quiz = isNew ? null : fetchedQuiz;
   const savedForm = localStorage.getItem('form');
 
-  let blocker = useBlocker(
-    ({ currentLocation, nextLocation }) =>
-      currentLocation.pathname !== nextLocation.pathname && isUpdated,
-    [isUpdated]
-  );
-
   const {
     register,
     handleSubmit,
@@ -50,7 +43,7 @@ function QuizForm() {
     setValue,
     setError,
     clearErrors,
-    formState: { errors },
+    formState: { errors, touchedFields },
   } = useForm({
     defaultValues: savedForm
       ? JSON.parse(savedForm)
@@ -73,6 +66,14 @@ function QuizForm() {
         },
   });
 
+  let blocker = useBlocker(
+    ({ currentLocation, nextLocation }) => {
+      const formTouched = Object.keys(touchedFields).length > 0;
+      return currentLocation.pathname !== nextLocation.pathname && formTouched;
+    },
+    [touchedFields]
+  );
+
   useEffect(() => {
     if (!isNew && quiz && !savedForm) {
       for (const [key, value] of Object.entries(quiz)) {
@@ -83,7 +84,6 @@ function QuizForm() {
 
   useEffect(() => {
     const subscription = watch(() => {
-      setIsUpdated(true);
       localStorage.setItem('form', JSON.stringify(getValues()));
     });
     return () => subscription.unsubscribe();
@@ -101,7 +101,6 @@ function QuizForm() {
       toast.success('Quiz added successfully.', {
         duration: 5000,
       });
-      setIsUpdated(false);
       setTimeout(() => navigate('/quizzes'), 500);
     },
     onError: (error) => {
@@ -122,7 +121,6 @@ function QuizForm() {
       toast.success('Quiz updated successfully.', {
         duration: 5000,
       });
-      setIsUpdated(false);
       setTimeout(() => navigate('/quizzes'), 500);
     },
     onError: (error) => {

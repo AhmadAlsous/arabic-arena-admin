@@ -89,7 +89,6 @@ function PlacementTestForm() {
       toast.success('Placement Test updated successfully.', {
         duration: 5000,
       });
-      handleLeave();
     },
     onError: (error) => {
       setTestIsLoading(false);

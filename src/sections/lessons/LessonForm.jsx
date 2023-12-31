@@ -23,7 +23,6 @@ import Spinner from 'src/components/Spinner';
 import toast from 'react-hot-toast';
 
 function LessonForm() {
-  const [isUpdated, setIsUpdated] = useState(false);
   const [lessonIsLoading, setLessonIsLoading] = useState(false);
   let lessonTitle = useParams()?.lesson;
   const isNew = lessonTitle === undefined;
@@ -43,12 +42,6 @@ function LessonForm() {
   const lesson = isNew ? null : fetchedLesson;
   const savedForm = localStorage.getItem('form');
 
-  let blocker = useBlocker(
-    ({ currentLocation, nextLocation }) =>
-      currentLocation.pathname !== nextLocation.pathname && isUpdated,
-    [isUpdated]
-  );
-
   const {
     register,
     handleSubmit,
@@ -58,7 +51,7 @@ function LessonForm() {
     setValue,
     setError,
     clearErrors,
-    formState: { errors },
+    formState: { errors, touchedFields },
   } = useForm({
     defaultValues: savedForm
       ? JSON.parse(savedForm)
@@ -92,6 +85,14 @@ function LessonForm() {
         },
   });
 
+  let blocker = useBlocker(
+    ({ currentLocation, nextLocation }) => {
+      const formTouched = Object.keys(touchedFields).length > 0;
+      return currentLocation.pathname !== nextLocation.pathname && formTouched;
+    },
+    [touchedFields]
+  );
+
   useEffect(() => {
     if (!isNew && lesson && !savedForm) {
       const lessonData = {
@@ -111,7 +112,6 @@ function LessonForm() {
 
   useEffect(() => {
     const subscription = watch(() => {
-      setIsUpdated(true);
       localStorage.setItem('form', JSON.stringify(getValues()));
     });
     return () => subscription.unsubscribe();
@@ -187,7 +187,6 @@ function LessonForm() {
       setLessonIsLoading(false);
       toast.remove();
       toast.success('Lesson added successfully.', { duration: 5000 });
-      setIsUpdated(false);
       setTimeout(() => navigate('/lessons'), 500);
     },
     onError: (error) => {
@@ -206,7 +205,6 @@ function LessonForm() {
       setLessonIsLoading(false);
       toast.remove();
       toast.success('Lesson updated successfully.', { duration: 5000 });
-      setIsUpdated(false);
       setTimeout(() => navigate('/lessons'), 500);
     },
     onError: (error) => {
