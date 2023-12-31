@@ -35,6 +35,11 @@ const navConfig = [
     path: '/feedback',
     icon: icon('feedback'),
   },
+  {
+    title: 'change password',
+    path: '/password',
+    icon: icon('password'),
+  },
 ];
 
 export default navConfig;

@@ -95,13 +95,15 @@ function QuizForm() {
     },
     onSuccess: () => {
       toast.remove();
-      toast.success('Quiz added successfully.');
+      toast.success('Quiz added successfully.', {
+        duration: 5000,
+      });
       setIsUpdated(false);
       setTimeout(() => navigate('/quizzes'), 500);
     },
     onError: (error) => {
       toast.remove();
-      toast.error(`Error creating quiz: ${error.message}`);
+      toast.error(`Error creating quiz: ${error.message}`, { duration: 5000 });
     },
   });
   const editQuiz = useMutation({
@@ -111,13 +113,15 @@ function QuizForm() {
     },
     onSuccess: () => {
       toast.remove();
-      toast.success('Quiz updated successfully.');
+      toast.success('Quiz updated successfully.', {
+        duration: 5000,
+      });
       setIsUpdated(false);
       setTimeout(() => navigate('/quizzes'), 500);
     },
     onError: (error) => {
       toast.remove();
-      toast.error(`Error updating quiz: ${error.message}`);
+      toast.error(`Error updating quiz: ${error.message}`, { duration: 5000 });
     },
   });
 
@@ -138,7 +142,8 @@ function QuizForm() {
         >
           Try again?
         </Button>
-      </Stack>
+      </Stack>,
+      { duration: 5000 }
     );
     return;
   }
@@ -168,6 +173,8 @@ function QuizForm() {
     blocker.proceed();
     localStorage.removeItem('form');
   };
+
+  const isLoading = saveQuiz.isLoading || editQuiz.isLoading;
 
   return (
     <Container>
@@ -206,7 +213,13 @@ function QuizForm() {
               isQuiz={true}
             />
             <Stack direction="row" alignItems="center" justifyContent="flex-end">
-              <Button variant="contained" color="primary" type="submit" onClick={handleClick}>
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                onClick={handleClick}
+                disabled={isLoading}
+              >
                 {isNew ? 'Create Quiz' : 'Update Quiz'}
               </Button>
             </Stack>

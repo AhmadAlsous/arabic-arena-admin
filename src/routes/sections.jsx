@@ -7,6 +7,7 @@ export const IndexPage = lazy(() => import('src/sections/dashboard/AppView'));
 export const UserPage = lazy(() => import('src/sections/user/UsersView'));
 export const FeedbackPage = lazy(() => import('src/sections/feedback/FeedbackView'));
 export const LoginPage = lazy(() => import('src/sections/login/LoginView'));
+export const PasswordPage = lazy(() => import('src/sections/login/PasswordView'));
 export const LessonsPage = lazy(() => import('src/sections/lessons/LessonsView'));
 export const LessonFormPage = lazy(() => import('src/sections/lessons/LessonForm'));
 export const QuizFormPage = lazy(() => import('src/sections/quizzes/QuizForm'));
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
   {
     path: '404',
     element: <Page404 />,
+  },
+  {
+    path: 'password',
+    element: <PasswordPage />,
   },
   {
     path: '*',

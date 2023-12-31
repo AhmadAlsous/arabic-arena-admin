@@ -40,7 +40,8 @@ export default function LessonsView({ isQuiz = false }) {
         >
           Try again?
         </Button>
-      </Stack>
+      </Stack>,
+      { duration: 5000 }
     );
   }
 
@@ -49,14 +50,16 @@ export default function LessonsView({ isQuiz = false }) {
   const [selectedType, setSelectedType] = useState('All');
   const [searchWord, setSearchWord] = useState('');
   const filteredLessons = data
-    ? data.filter(
-        (lesson) =>
-          (selectedLevel === 'All' || lesson.level === selectedLevel) &&
-          (selectedType === 'All' || lesson.type === selectedType) &&
-          (searchWord === '' ||
-            lesson.titleArabic.includes(searchWord) ||
-            lesson.titleEnglish.toLowerCase().includes(searchWord.toLowerCase()))
-      )
+    ? data
+        .reverse()
+        .filter(
+          (lesson) =>
+            (selectedLevel === 'All' || lesson.level === selectedLevel) &&
+            (selectedType === 'All' || lesson.type === selectedType) &&
+            (searchWord === '' ||
+              lesson.titleArabic.includes(searchWord) ||
+              lesson.titleEnglish.toLowerCase().includes(searchWord.toLowerCase()))
+        )
     : [];
 
   return (
@@ -113,14 +116,30 @@ export default function LessonsView({ isQuiz = false }) {
           <Spinner />
         </Stack>
       )}
-      <Grid container spacing={3}>
-        {data &&
-          filteredLessons.map((lesson) => (
+      {data && data.length > 0 && (
+        <Grid container spacing={3}>
+          {filteredLessons.map((lesson) => (
             <Grid key={lesson.id} xs={12} sm={6} md={3}>
               <LessonCard lesson={lesson} isQuiz={isQuiz} />
             </Grid>
           ))}
-      </Grid>
+        </Grid>
+      )}
+      {data && data.length === 0 && (
+        <Stack
+          spacing={3}
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '350px',
+          }}
+        >
+          <Typography textAlign={'center'} sx={{ mt: 15, fontWeight: 400 }}>
+            No {isQuiz ? 'quizzes' : 'lessons'} have been added yet
+          </Typography>
+        </Stack>
+      )}
     </Container>
   );
 }

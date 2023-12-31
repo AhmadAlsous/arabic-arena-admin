@@ -48,6 +48,9 @@ function LessonForm() {
     [isUpdated]
   );
 
+  const isLoadingAny =
+    isLoadingLesson || saveWord.isLoading || saveLesson.isLoading || editLesson.isLoading;
+
   const {
     register,
     handleSubmit,
@@ -171,7 +174,7 @@ function LessonForm() {
     },
     onError: (error) => {
       toast.remove();
-      toast.error(`Error saving words: ${error.message}`);
+      toast.error(`Error saving words: ${error.message}`, { duration: 5000 });
     },
   });
   const saveLesson = useMutation({
@@ -181,13 +184,13 @@ function LessonForm() {
     },
     onSuccess: () => {
       toast.remove();
-      toast.success('Lesson added successfully.');
+      toast.success('Lesson added successfully.', { duration: 5000 });
       setIsUpdated(false);
       setTimeout(() => navigate('/lessons'), 500);
     },
     onError: (error) => {
       toast.remove();
-      toast.error(`Error creating lesson: ${error.message}`);
+      toast.error(`Error creating lesson: ${error.message}`, { duration: 5000 });
     },
   });
   const editLesson = useMutation({
@@ -197,13 +200,13 @@ function LessonForm() {
     },
     onSuccess: () => {
       toast.remove();
-      toast.success('Lesson updated successfully.');
+      toast.success('Lesson updated successfully.', { duration: 5000 });
       setIsUpdated(false);
       setTimeout(() => navigate('/lessons'), 500);
     },
     onError: (error) => {
       toast.remove();
-      toast.error(`Error updating lesson: ${error.message}`);
+      toast.error(`Error updating lesson: ${error.message}`, { duration: 5000 });
     },
   });
 
@@ -224,7 +227,8 @@ function LessonForm() {
         >
           Try again?
         </Button>
-      </Stack>
+      </Stack>,
+      { duration: 5000 }
     );
     return;
   }
@@ -249,7 +253,7 @@ function LessonForm() {
             saveWord.mutate(translations);
           } else {
             toast.remove();
-            toast.error(`Error saving lesson: ${error.message}`);
+            toast.error(`Error saving lesson: ${error.message}`, { duration: 5000 });
             return;
           }
         }
@@ -369,7 +373,13 @@ function LessonForm() {
               control={control}
             />
             <Stack direction="row" alignItems="center" justifyContent="flex-end">
-              <Button variant="contained" color="primary" type="submit" onClick={handleClick}>
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                onClick={handleClick}
+                disabled={isLoadingAny}
+              >
                 {isNew ? 'Create Lesson' : 'Update Lesson'}
               </Button>
             </Stack>

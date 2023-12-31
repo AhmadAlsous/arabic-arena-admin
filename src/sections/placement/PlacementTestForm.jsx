@@ -83,12 +83,14 @@ function PlacementTestForm() {
     },
     onSuccess: () => {
       toast.remove();
-      toast.success('Placement Test updated successfully.');
+      toast.success('Placement Test updated successfully.', {
+        duration: 5000,
+      });
       setIsUpdated(false);
     },
     onError: (error) => {
       toast.remove();
-      toast.error(`Error updating placement test: ${error.message}`);
+      toast.error(`Error updating placement test: ${error.message}`, { duration: 5000 });
     },
   });
 
@@ -109,7 +111,8 @@ function PlacementTestForm() {
         >
           Try again?
         </Button>
-      </Stack>
+      </Stack>,
+      { duration: 5000 }
     );
     return;
   }
@@ -170,7 +173,13 @@ function PlacementTestForm() {
               isQuiz={true}
             />
             <Stack direction="row" alignItems="center" justifyContent="flex-end">
-              <Button variant="contained" color="primary" type="submit" onClick={handleClick}>
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                onClick={handleClick}
+                disabled={editTest.isLoading}
+              >
                 Update Test
               </Button>
             </Stack>
