@@ -12,7 +12,6 @@ import toast from 'react-hot-toast';
 import Spinner from 'src/components/Spinner';
 
 function PlacementTestForm() {
-  const [isUpdated, setIsUpdated] = useState(false);
   const [testIsLoading, setTestIsLoading] = useState(false);
   const {
     data: test,
@@ -25,12 +24,6 @@ function PlacementTestForm() {
   });
   const savedForm = localStorage.getItem('form');
 
-  let blocker = useBlocker(
-    ({ currentLocation, nextLocation }) =>
-      currentLocation.pathname !== nextLocation.pathname && isUpdated,
-    [isUpdated]
-  );
-
   const {
     register,
     handleSubmit,
@@ -40,7 +33,7 @@ function PlacementTestForm() {
     setValue,
     setError,
     clearErrors,
-    formState: { errors },
+    formState: { errors, touchedFields },
   } = useForm({
     defaultValues: savedForm
       ? JSON.parse(savedForm)
@@ -61,6 +54,14 @@ function PlacementTestForm() {
         },
   });
 
+  let blocker = useBlocker(
+    ({ currentLocation, nextLocation }) => {
+      const formTouched = Object.keys(touchedFields).length > 0;
+      return currentLocation.pathname !== nextLocation.pathname && formTouched;
+    },
+    [touchedFields]
+  );
+
   useEffect(() => {
     if (test && !savedForm) {
       for (const [key, value] of Object.entries(test)) {
@@ -71,7 +72,6 @@ function PlacementTestForm() {
 
   useEffect(() => {
     const subscription = watch(() => {
-      setIsUpdated(true);
       localStorage.setItem('form', JSON.stringify(getValues()));
     });
     return () => subscription.unsubscribe();
@@ -89,7 +89,7 @@ function PlacementTestForm() {
       toast.success('Placement Test updated successfully.', {
         duration: 5000,
       });
-      setIsUpdated(false);
+      handleLeave();
     },
     onError: (error) => {
       setTestIsLoading(false);
