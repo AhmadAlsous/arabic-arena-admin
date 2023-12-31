@@ -96,7 +96,8 @@ function PlacementTestForm() {
 
   useEffect(() => {
     console.log(editTest.isLoading);
-  }, [editTest.isLoading]);
+    console.log(editTest.isFetching);
+  }, [editTest.isLoading, editTest.isFetching]);
 
   if (error) {
     toast.error(
@@ -182,7 +183,7 @@ function PlacementTestForm() {
                 color="primary"
                 type="submit"
                 onClick={handleClick}
-                disabled={editTest.isLoading}
+                disabled={editTest.isFetching || editTest.isLoading}
               >
                 Update Test
               </Button>
