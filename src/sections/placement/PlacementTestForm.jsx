@@ -12,6 +12,7 @@ import toast from 'react-hot-toast';
 import Spinner from 'src/components/Spinner';
 
 function PlacementTestForm() {
+  const [formSubmitted, setFormSubmitted] = useState(false);
   const [testIsLoading, setTestIsLoading] = useState(false);
   const {
     data: test,
@@ -57,9 +58,9 @@ function PlacementTestForm() {
   let blocker = useBlocker(
     ({ currentLocation, nextLocation }) => {
       const formTouched = Object.keys(touchedFields).length > 0;
-      return currentLocation.pathname !== nextLocation.pathname && formTouched;
+      return currentLocation.pathname !== nextLocation.pathname && formTouched && !formSubmitted;
     },
-    [touchedFields]
+    [touchedFields, formSubmitted]
   );
 
   useEffect(() => {
@@ -73,9 +74,12 @@ function PlacementTestForm() {
   useEffect(() => {
     const subscription = watch(() => {
       localStorage.setItem('form', JSON.stringify(getValues()));
+      if (formSubmitted) {
+        setFormSubmitted(false);
+      }
     });
     return () => subscription.unsubscribe();
-  }, [watch, getValues]);
+  }, [watch, getValues, formSubmitted]);
 
   const editTest = useMutation({
     mutationFn: updatePlacementTest,
@@ -85,6 +89,7 @@ function PlacementTestForm() {
     },
     onSuccess: () => {
       setTestIsLoading(false);
+      setFormSubmitted(true);
       toast.remove();
       toast.success('Placement Test updated successfully.', {
         duration: 5000,
