@@ -10,9 +10,11 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { fetchPlacementTest, updatePlacementTest } from 'src/services/placementServices';
 import toast from 'react-hot-toast';
 import Spinner from 'src/components/Spinner';
+import SpinnerMini from 'src/components/SpinnerMini';
 
 function PlacementTestForm() {
   const [isUpdated, setIsUpdated] = useState(false);
+  const [testIsLoading, setTestIsLoading] = useState(false);
   const {
     data: test,
     isLoading,
@@ -79,9 +81,11 @@ function PlacementTestForm() {
   const editTest = useMutation({
     mutationFn: updatePlacementTest,
     onMutate: () => {
+      setTestIsLoading(true);
       toast.loading('Updating placement test...');
     },
     onSuccess: () => {
+      setTestIsLoading(false);
       toast.remove();
       toast.success('Placement Test updated successfully.', {
         duration: 5000,
@@ -89,15 +93,11 @@ function PlacementTestForm() {
       setIsUpdated(false);
     },
     onError: (error) => {
+      setTestIsLoading(false);
       toast.remove();
       toast.error(`Error updating placement test: ${error.message}`, { duration: 5000 });
     },
   });
-
-  useEffect(() => {
-    console.log(editTest.isLoading);
-    console.log(editTest.isFetching);
-  }, [editTest.isLoading, editTest.isFetching]);
 
   if (error) {
     toast.error(
@@ -183,9 +183,9 @@ function PlacementTestForm() {
                 color="primary"
                 type="submit"
                 onClick={handleClick}
-                disabled={editTest.isFetching || editTest.isLoading}
+                disabled={testIsLoading}
               >
-                Update Test
+                {testIsLoading ? <SpinnerMini /> : 'Update Test'}
               </Button>
             </Stack>
           </form>

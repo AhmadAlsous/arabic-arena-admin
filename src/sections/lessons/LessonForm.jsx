@@ -312,9 +312,6 @@ function LessonForm() {
     localStorage.removeItem('form');
   };
 
-  const isLoadingAny =
-    isLoadingLesson || saveWord.isLoading || saveLesson.isLoading || editLesson.isLoading;
-
   return (
     <Container>
       {isLoadingLesson && (
@@ -373,13 +370,7 @@ function LessonForm() {
               control={control}
             />
             <Stack direction="row" alignItems="center" justifyContent="flex-end">
-              <Button
-                variant="contained"
-                color="primary"
-                type="submit"
-                onClick={handleClick}
-                disabled={isLoadingAny}
-              >
+              <Button variant="contained" color="primary" type="submit" onClick={handleClick}>
                 {isNew ? 'Create Lesson' : 'Update Lesson'}
               </Button>
             </Stack>

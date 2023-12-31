@@ -174,8 +174,6 @@ function QuizForm() {
     localStorage.removeItem('form');
   };
 
-  const isLoading = saveQuiz.isLoading || editQuiz.isLoading;
-
   return (
     <Container>
       {isLoadingQuiz && (
@@ -213,13 +211,7 @@ function QuizForm() {
               isQuiz={true}
             />
             <Stack direction="row" alignItems="center" justifyContent="flex-end">
-              <Button
-                variant="contained"
-                color="primary"
-                type="submit"
-                onClick={handleClick}
-                disabled={isLoading}
-              >
+              <Button variant="contained" color="primary" type="submit" onClick={handleClick}>
                 {isNew ? 'Create Quiz' : 'Update Quiz'}
               </Button>
             </Stack>
