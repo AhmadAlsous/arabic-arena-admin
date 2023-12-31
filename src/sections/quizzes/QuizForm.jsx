@@ -44,7 +44,7 @@ function QuizForm() {
     setValue,
     setError,
     clearErrors,
-    formState: { errors, touchedFields, isDirty },
+    formState: { errors, isDirty },
   } = useForm({
     defaultValues: savedForm
       ? JSON.parse(savedForm)
@@ -69,10 +69,9 @@ function QuizForm() {
 
   let blocker = useBlocker(
     ({ currentLocation, nextLocation }) => {
-      const formTouched = Object.keys(touchedFields).length > 0;
-      return currentLocation.pathname !== nextLocation.pathname && formTouched && !formSubmitted;
+      return currentLocation.pathname !== nextLocation.pathname && isDirty && !formSubmitted;
     },
-    [touchedFields, formSubmitted]
+    [isDirty, formSubmitted]
   );
 
   useEffect(() => {
