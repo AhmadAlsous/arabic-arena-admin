@@ -23,6 +23,7 @@ import Spinner from 'src/components/Spinner';
 import toast from 'react-hot-toast';
 
 function LessonForm() {
+  const [formSubmitted, setFormSubmitted] = useState(false);
   const [lessonIsLoading, setLessonIsLoading] = useState(false);
   let lessonTitle = useParams()?.lesson;
   const isNew = lessonTitle === undefined;
@@ -88,9 +89,9 @@ function LessonForm() {
   let blocker = useBlocker(
     ({ currentLocation, nextLocation }) => {
       const formTouched = Object.keys(touchedFields).length > 0;
-      return currentLocation.pathname !== nextLocation.pathname && formTouched;
+      return currentLocation.pathname !== nextLocation.pathname && formTouched && !formSubmitted;
     },
-    [touchedFields]
+    [touchedFields, formSubmitted]
   );
 
   useEffect(() => {
@@ -184,6 +185,7 @@ function LessonForm() {
       toast.loading('Creating lesson...');
     },
     onSuccess: () => {
+      setFormSubmitted(true);
       setLessonIsLoading(false);
       toast.remove();
       toast.success('Lesson added successfully.', { duration: 5000 });
@@ -202,6 +204,7 @@ function LessonForm() {
       toast.loading('Updating lesson...');
     },
     onSuccess: () => {
+      setFormSubmitted(true);
       setLessonIsLoading(false);
       toast.remove();
       toast.success('Lesson updated successfully.', { duration: 5000 });
@@ -384,7 +387,7 @@ function LessonForm() {
                 color="primary"
                 type="submit"
                 onClick={handleClick}
-                disabled={lessonIsLoading}
+                disabled={lessonIsLoading || Object.keys(touchedFields).length == 0}
               >
                 {isNew ? 'Create Lesson' : 'Update Lesson'}
               </Button>

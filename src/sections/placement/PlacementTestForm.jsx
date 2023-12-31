@@ -186,7 +186,7 @@ function PlacementTestForm() {
                 color="primary"
                 type="submit"
                 onClick={handleClick}
-                disabled={testIsLoading}
+                disabled={testIsLoading || Object.keys(touchedFields).length == 0}
               >
                 Update Test
               </Button>

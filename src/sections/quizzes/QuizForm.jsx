@@ -14,6 +14,7 @@ import toast from 'react-hot-toast';
 import Spinner from 'src/components/Spinner';
 
 function QuizForm() {
+  const [formSubmitted, setFormSubmitted] = useState(false);
   const [quizIsLoading, setQuizIsLoading] = useState(false);
   let quizTitle = useParams()?.quiz;
   const isNew = quizTitle === undefined;
@@ -69,9 +70,9 @@ function QuizForm() {
   let blocker = useBlocker(
     ({ currentLocation, nextLocation }) => {
       const formTouched = Object.keys(touchedFields).length > 0;
-      return currentLocation.pathname !== nextLocation.pathname && formTouched;
+      return currentLocation.pathname !== nextLocation.pathname && formTouched && !formSubmitted;
     },
-    [touchedFields]
+    [touchedFields, formSubmitted]
   );
 
   useEffect(() => {
@@ -97,6 +98,7 @@ function QuizForm() {
     },
     onSuccess: () => {
       setQuizIsLoading(false);
+      setFormSubmitted(true);
       toast.remove();
       toast.success('Quiz added successfully.', {
         duration: 5000,
@@ -117,6 +119,7 @@ function QuizForm() {
     },
     onSuccess: () => {
       setQuizIsLoading(false);
+      setFormSubmitted(true);
       toast.remove();
       toast.success('Quiz updated successfully.', {
         duration: 5000,
@@ -221,7 +224,7 @@ function QuizForm() {
                 color="primary"
                 type="submit"
                 onClick={handleClick}
-                disabled={quizIsLoading}
+                disabled={quizIsLoading || Object.keys(touchedFields).length == 0}
               >
                 {isNew ? 'Create Quiz' : 'Update Quiz'}
               </Button>
