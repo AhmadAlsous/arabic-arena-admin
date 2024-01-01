@@ -16,8 +16,11 @@ import Input from '../lessons/Input';
 import { useMutation } from '@tanstack/react-query';
 import { validate } from 'src/services/adminServices';
 import toast from 'react-hot-toast';
+import { useLocation } from 'react-router-dom';
 
 export default function LoginView() {
+  const location = useLocation();
+  const from = location.state?.from?.pathname || '/dashboard';
   const theme = useTheme();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -41,13 +44,19 @@ export default function LoginView() {
     },
     onSuccess: () => {
       setIsLoading(false);
-      router.push('/dashboard');
+      sessionStorage.setItem('loggedIn', 'true');
+      toast.success(`Login Successful`, { duration: 4000 });
+      router.push(from);
     },
     onError: () => {
       setIsLoading(false);
       toast.error(`Incorrect username or password.`, { duration: 5000 });
     },
   });
+
+  if (sessionStorage.getItem('loggedIn')) {
+    router.push('/dashboard');
+  }
 
   const onSubmit = (data) => {
     login.mutate(data);

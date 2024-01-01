@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { Outlet, Navigate, createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import DashboardLayout from 'src/layouts';
+import RequireAuth from './RequireAuth';
 
 export const IndexPage = lazy(() => import('src/sections/dashboard/AppView'));
 export const UserPage = lazy(() => import('src/sections/user/UsersView'));
@@ -21,11 +22,13 @@ const router = createBrowserRouter([
   },
   {
     element: (
-      <DashboardLayout>
-        <Suspense>
-          <Outlet />
-        </Suspense>
-      </DashboardLayout>
+      <RequireAuth>
+        <DashboardLayout>
+          <Suspense>
+            <Outlet />
+          </Suspense>
+        </DashboardLayout>
+      </RequireAuth>
     ),
     children: [
       { path: 'dashboard', element: <IndexPage /> },
