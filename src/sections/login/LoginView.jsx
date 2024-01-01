@@ -11,16 +11,47 @@ import InputAdornment from '@mui/material/InputAdornment';
 import { useRouter } from 'src/routes/hooks';
 import { bgGradient } from 'src/theme/css';
 import Iconify from 'src/components/iconify';
+import { useForm } from 'react-hook-form';
+import Input from '../lessons/Input';
+import { useMutation } from '@tanstack/react-query';
+import { validate } from 'src/services/adminServices';
+import toast from 'react-hot-toast';
 
 export default function LoginView() {
   const theme = useTheme();
-
   const router = useRouter();
-
+  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleClick = () => {
-    router.push('/dashboard');
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      id: '',
+      password: '',
+    },
+  });
+
+  const login = useMutation({
+    queryFn: validate,
+    onMutate: () => {
+      setIsLoading(true);
+    },
+    onSuccess: () => {
+      setIsLoading(false);
+      router.push('/dashboard');
+    },
+    onError: () => {
+      setIsLoading(false);
+      toast.error(`Incorrect username or password.`, { duration: 5000 });
+    },
+  });
+
+  const onSubmit = (data) => {
+    login.mutate(data);
+    console.log(data);
   };
 
   return (
@@ -47,37 +78,59 @@ export default function LoginView() {
           <Typography variant="h4" sx={{ mt: 4 }}>
             Sign in to Arabic Arena
           </Typography>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Stack spacing={3} mt={5}>
+              <Input errors={errors}>
+                <TextField
+                  id="id"
+                  label="Username"
+                  variant="outlined"
+                  fullWidth
+                  size="normal"
+                  error={!!errors.id}
+                  {...register('id', {
+                    required: 'This field is required',
+                  })}
+                />
+              </Input>
 
-          <Stack spacing={3} mt={5}>
-            <TextField name="username" label="Username" />
+              <Input errors={errors}>
+                <TextField
+                  id="password"
+                  label="Password"
+                  variant="outlined"
+                  fullWidth
+                  size="normal"
+                  type={showPassword ? 'text' : 'password'}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                          <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                  error={!!errors.password}
+                  {...register('password', {
+                    required: 'This field is required',
+                  })}
+                />
+              </Input>
+            </Stack>
 
-            <TextField
-              name="password"
-              label="Password"
-              type={showPassword ? 'text' : 'password'}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                      <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Stack>
-
-          <LoadingButton
-            fullWidth
-            size="large"
-            type="submit"
-            variant="contained"
-            color="inherit"
-            onClick={handleClick}
-            sx={{ mt: 5 }}
-          >
-            Login
-          </LoadingButton>
+            <LoadingButton
+              fullWidth
+              size="large"
+              type="submit"
+              variant="contained"
+              color="inherit"
+              disabled={isLoading}
+              sx={{ mt: 5 }}
+            >
+              Login
+            </LoadingButton>
+          </form>
         </Card>
       </Stack>
     </Box>
