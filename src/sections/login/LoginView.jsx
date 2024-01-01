@@ -35,7 +35,7 @@ export default function LoginView() {
   });
 
   const login = useMutation({
-    queryFn: validate,
+    mutationFn: validate,
     onMutate: () => {
       setIsLoading(true);
     },
