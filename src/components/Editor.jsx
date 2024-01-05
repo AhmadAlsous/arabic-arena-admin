@@ -19,9 +19,6 @@ function Editor({ setValue, text, isVideo }) {
       'list',
       'textAlign',
       'colorPicker',
-      'link',
-      'embedded',
-      'image',
       'history',
     ],
     inline: {
@@ -84,6 +81,19 @@ function Editor({ setValue, text, isVideo }) {
 
   const toolbarOptions = {
     ...toolbarVideoOptions,
+    options: [
+      'inline',
+      'blockType',
+      'fontSize',
+      'fontFamily',
+      'list',
+      'textAlign',
+      'colorPicker',
+      'link',
+      'embedded',
+      'image',
+      'history',
+    ],
     link: {
       inDropdown: false,
       showOpenOptionOnHover: true,
