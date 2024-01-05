@@ -127,10 +127,26 @@ function LessonForm() {
     const applyAlignmentToParent = (el) => {
       while (el.parentNode && el.parentNode !== doc.body) {
         el = el.parentNode;
-        if (el.nodeType === Node.ELEMENT_NODE && arabicRegex.test(el.textContent)) {
+        if (el.nodeType === Node.ELEMENT_NODE) {
           el.style.textAlign = 'right';
           el.style.direction = 'rtl';
-        } else if (el.nodeType === Node.ELEMENT_NODE) {
+        }
+      }
+    };
+
+    doc.body.querySelectorAll('*').forEach((el) => {
+      if (el.nodeType === Node.TEXT_NODE && arabicRegex.test(el.textContent)) {
+        applyAlignmentToParent(el);
+      } else if (el.nodeType === Node.ELEMENT_NODE && arabicRegex.test(el.textContent)) {
+        el.style.textAlign = 'right';
+        el.style.direction = 'rtl';
+      }
+    });
+
+    const applyEnglishAlignmentToParent = (el) => {
+      while (el.parentNode && el.parentNode !== doc.body) {
+        el = el.parentNode;
+        if (el.nodeType === Node.ELEMENT_NODE) {
           el.style.textAlign = 'left';
           el.style.direction = 'ltr';
         }
@@ -138,12 +154,9 @@ function LessonForm() {
     };
 
     doc.body.querySelectorAll('*').forEach((el) => {
-      if (el.nodeType === Node.TEXT_NODE) {
-        applyAlignmentToParent(el);
-      } else if (el.nodeType === Node.ELEMENT_NODE && arabicRegex.test(el.textContent)) {
-        el.style.textAlign = 'right';
-        el.style.direction = 'rtl';
-      } else if (el.nodeType === Node.ELEMENT_NODE) {
+      if (el.nodeType === Node.TEXT_NODE && !arabicRegex.test(el.textContent)) {
+        applyEnglishAlignmentToParent(el);
+      } else if (el.nodeType === Node.ELEMENT_NODE && !arabicRegex.test(el.textContent)) {
         el.style.textAlign = 'left';
         el.style.direction = 'ltr';
       }
