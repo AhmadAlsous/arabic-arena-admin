@@ -143,25 +143,6 @@ function LessonForm() {
       }
     });
 
-    const applyEnglishAlignmentToParent = (el) => {
-      while (el.parentNode && el.parentNode !== doc.body) {
-        el = el.parentNode;
-        if (el.nodeType === Node.ELEMENT_NODE) {
-          el.style.textAlign = 'left';
-          el.style.direction = 'ltr';
-        }
-      }
-    };
-
-    doc.body.querySelectorAll('*').forEach((el) => {
-      if (el.nodeType === Node.TEXT_NODE && !arabicRegex.test(el.textContent)) {
-        applyEnglishAlignmentToParent(el);
-      } else if (el.nodeType === Node.ELEMENT_NODE && !arabicRegex.test(el.textContent)) {
-        el.style.textAlign = 'left';
-        el.style.direction = 'ltr';
-      }
-    });
-
     const divs = doc.body.querySelectorAll('div');
     divs.forEach((div) => {
       const hasImage = div.querySelector('img') !== null;
