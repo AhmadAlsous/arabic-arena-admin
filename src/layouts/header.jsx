@@ -13,6 +13,7 @@ import { bgBlur } from 'src/theme/css';
 import Iconify from 'src/components/iconify';
 
 import { NAV, HEADER } from './config-layout';
+import { useRouter } from 'src/routes/hooks';
 
 const Container = styled.div`
   display: flex;
@@ -22,9 +23,15 @@ const Container = styled.div`
 `;
 
 export default function Header({ onOpenNav }) {
+  const router = useRouter();
   const theme = useTheme();
 
   const lgUp = useResponsive('up', 'lg');
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('loggedIn');
+    router.push('/dashboard');
+  };
 
   const renderContent = (
     <Container>
@@ -37,7 +44,7 @@ export default function Header({ onOpenNav }) {
       <img src="/LanguageCenterLogo.png" alt="logo" width="40" height="45" />
 
       <Stack direction="row" alignItems="center" spacing={1}>
-        <Button sx={{ color: 'rgba(255, 0, 0, 0.7)' }} size="large">
+        <Button sx={{ color: 'rgba(255, 0, 0, 0.7)' }} size="large" onClick={handleLogout}>
           LOG OUT
         </Button>
       </Stack>
