@@ -3,12 +3,6 @@ import { Editor as TextEditor } from 'react-draft-wysiwyg';
 import { EditorState, convertFromRaw, convertToRaw } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
-const tranformUrl = (url) => {
-  let videoId = url.split('/').pop();
-  if (url.includes('youtube.com')) videoId = new URL(url).searchParams.get('v');
-  return `https://www.youtube.com/embed/${videoId}`;
-};
-
 function Editor({ setValue, text, isVideo }) {
   const toolbarVideoOptions = {
     options: [
@@ -91,7 +85,6 @@ function Editor({ setValue, text, isVideo }) {
       'textAlign',
       'colorPicker',
       'link',
-      'embedded',
       'image',
       'history',
     ],
@@ -100,9 +93,6 @@ function Editor({ setValue, text, isVideo }) {
       showOpenOptionOnHover: true,
       defaultTargetOption: '_self',
       options: ['link'],
-    },
-    embedded: {
-      embedCallback: tranformUrl,
     },
     image: {
       urlEnabled: true,
