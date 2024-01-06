@@ -91,7 +91,7 @@ function LessonVideoForm({ register, errors, setValue, watch, getValues, control
                   required: 'This field is required',
                   pattern: {
                     value:
-                      /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[\w-]+(&[\w-]+)*$/,
+                      /^https?:\/\/(?:www\.youtube\.com\/watch\?v=|youtu\.be\/|edpuzzle\.com\/media\/)[\w-]+(?:\?[\w-]+=[\w-]+)?/,
                     message: 'Please enter a valid YouTube or Edpuzzle video link',
                   },
                 })}
