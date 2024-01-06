@@ -44,6 +44,7 @@ function Editor({ setValue, text, isVideo }) {
     },
     colorPicker: {
       colors: [
+        'transparent',
         'rgb(97,189,109)',
         'rgb(26,188,156)',
         'rgb(84,172,210)',
