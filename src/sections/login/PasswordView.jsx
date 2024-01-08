@@ -68,7 +68,11 @@ export default function PasswordView() {
 
   const onSubmit = (data) => {
     console.log(data);
-    editPassword.mutate(data);
+    editPassword.mutate({
+      id: 'admin',
+      password: data.currentPassword,
+      newPassword: data.newPassword,
+    });
   };
 
   return (
