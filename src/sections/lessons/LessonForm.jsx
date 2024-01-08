@@ -21,6 +21,7 @@ import { addWord, fetchWord } from 'src/services/wordServices';
 import { addLesson, fetchLesson, updateLesson } from 'src/services/lessonServices';
 import Spinner from 'src/components/Spinner';
 import toast from 'react-hot-toast';
+import { replaceSpacesWithDashes } from 'src/utils/stringOperations';
 
 function LessonForm() {
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -196,6 +197,9 @@ function LessonForm() {
       toast.error(`Error saving words: ${error.message}`, { duration: 5000 });
     },
   });
+  const lessonLink = `https://arabicarena.netlify.app/learn/${replaceSpacesWithDashes(
+    getValues('titleEnglish').toLowerCase()
+  )}`;
   const saveLesson = useMutation({
     mutationFn: addLesson,
     onMutate: () => {
@@ -207,6 +211,10 @@ function LessonForm() {
       setLessonIsLoading(false);
       toast.remove();
       toast.success('Lesson added successfully.', { duration: 5000 });
+      toast('Click here to view the new lesson', {
+        duration: 5000,
+        onClick: () => window.open(lessonLink, '_blank'),
+      });
       setTimeout(() => navigate('/lessons'), 500);
     },
     onError: (error) => {
@@ -226,6 +234,10 @@ function LessonForm() {
       setLessonIsLoading(false);
       toast.remove();
       toast.success('Lesson updated successfully.', { duration: 5000 });
+      toast('Click here to view the updated lesson', {
+        duration: 5000,
+        onClick: () => window.open(lessonLink, '_blank'),
+      });
       setTimeout(() => navigate('/lessons'), 500);
     },
     onError: (error) => {
