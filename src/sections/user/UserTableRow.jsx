@@ -2,10 +2,10 @@ import Stack from '@mui/material/Stack';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import Typography from '@mui/material/Typography';
-import { languages } from 'src/config/flags';
+import { flags } from 'src/config/flags';
 
 export default function UserTableRow({ name, email, level, language }) {
-  const countryCode = languages.find((item) => item.language === language).countryCode;
+  const countryCode = flags.find((item) => item.language === language).countryCode;
   return (
     <>
       <TableRow hover tabIndex={-1}>
