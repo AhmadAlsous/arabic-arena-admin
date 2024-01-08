@@ -211,10 +211,35 @@ function LessonForm() {
       setLessonIsLoading(false);
       toast.remove();
       toast.success('Lesson added successfully.', { duration: 5000 });
-      toast('Click here to view the new lesson', {
-        duration: 5000,
-        onClick: () => window.open(lessonLink, '_blank'),
-      });
+      toast.custom(
+        (t) => (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '16px',
+              color: 'white',
+              backgroundColor: '#333',
+              borderRadius: '8px',
+            }}
+            onClick={() => toast.dismiss(t.id)}
+          >
+            <a
+              href={lessonLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: 'black', textDecoration: 'none' }}
+            >
+              Click here to view the new lesson
+            </a>
+          </div>
+        ),
+        {
+          duration: 5000,
+          onClick: () => window.open(lessonLink, '_blank'),
+        }
+      );
       setTimeout(() => navigate('/lessons'), 500);
     },
     onError: (error) => {
@@ -234,10 +259,35 @@ function LessonForm() {
       setLessonIsLoading(false);
       toast.remove();
       toast.success('Lesson updated successfully.', { duration: 5000 });
-      toast('Click here to view the updated lesson', {
-        duration: 5000,
-        onClick: () => window.open(lessonLink, '_blank'),
-      });
+      toast.custom(
+        (t) => (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '16px',
+              color: 'white',
+              backgroundColor: '#333',
+              borderRadius: '8px',
+            }}
+            onClick={() => toast.dismiss(t.id)}
+          >
+            <a
+              href={lessonLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: 'black', textDecoration: 'none' }}
+            >
+              Click here to view the updated lesson
+            </a>
+          </div>
+        ),
+        {
+          duration: 5000,
+          onClick: () => window.open(lessonLink, '_blank'),
+        }
+      );
       setTimeout(() => navigate('/lessons'), 500);
     },
     onError: (error) => {
