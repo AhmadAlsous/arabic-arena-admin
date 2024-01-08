@@ -220,7 +220,6 @@ function LessonForm() {
               justifyContent: 'center',
               padding: '16px',
               color: 'white',
-              backgroundColor: '#333',
               borderRadius: '8px',
             }}
             onClick={() => toast.dismiss(t.id)}
@@ -268,7 +267,6 @@ function LessonForm() {
               justifyContent: 'center',
               padding: '16px',
               color: 'white',
-              backgroundColor: '#333',
               borderRadius: '8px',
             }}
             onClick={() => toast.dismiss(t.id)}
