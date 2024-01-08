@@ -49,7 +49,11 @@ const router = createBrowserRouter([
   },
   {
     path: 'password',
-    element: <PasswordPage />,
+    element: (
+      <Suspense>
+        <PasswordPage />
+      </Suspense>
+    ),
   },
   {
     path: '*',

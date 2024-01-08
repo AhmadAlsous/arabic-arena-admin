@@ -91,11 +91,11 @@ export default function PasswordView() {
             py: 7,
           }}
         >
-          <img src="../../LanguageCenterLogo.png" width={50} />
-          <Typography variant="h4" sx={{ mt: 4 }}>
-            Change Password
-          </Typography>
           <form onSubmit={handleSubmit(onSubmit)}>
+            <img src="../../LanguageCenterLogo.png" width={50} />
+            <Typography variant="h4" sx={{ mt: 4 }}>
+              Change Password
+            </Typography>
             <Stack spacing={3} mt={5}>
               <Input errors={errors}>
                 <TextField
@@ -165,31 +165,31 @@ export default function PasswordView() {
                 />
               </Input>
             </Stack>
+            <Stack spacing={3} direction={'row'} marginTop={3}>
+              <LoadingButton
+                fullWidth
+                size="large"
+                type="submit"
+                variant="outlined"
+                color="inherit"
+                onClick={() => navigate(-1)}
+                sx={{ mt: 5 }}
+              >
+                Cancel
+              </LoadingButton>
+              <LoadingButton
+                fullWidth
+                size="large"
+                type="submit"
+                variant="contained"
+                color="inherit"
+                sx={{ mt: 5 }}
+                disabled={!isDirty || isLoading}
+              >
+                Change
+              </LoadingButton>
+            </Stack>
           </form>
-          <Stack spacing={3} direction={'row'} marginTop={3}>
-            <LoadingButton
-              fullWidth
-              size="large"
-              type="submit"
-              variant="outlined"
-              color="inherit"
-              onClick={() => navigate(-1)}
-              sx={{ mt: 5 }}
-            >
-              Cancel
-            </LoadingButton>
-            <LoadingButton
-              fullWidth
-              size="large"
-              type="submit"
-              variant="contained"
-              color="inherit"
-              sx={{ mt: 5 }}
-              disabled={!isDirty || isLoading}
-            >
-              Change
-            </LoadingButton>
-          </Stack>
         </Card>
       </Stack>
     </Box>
