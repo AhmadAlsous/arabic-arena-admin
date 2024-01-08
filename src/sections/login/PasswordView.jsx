@@ -28,10 +28,6 @@ export default function PasswordView() {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const handleClick = () => {
-    router.push('/dashboard');
-  };
-
   const {
     handleSubmit,
     register,
@@ -188,7 +184,6 @@ export default function PasswordView() {
               type="submit"
               variant="contained"
               color="inherit"
-              onClick={handleClick}
               sx={{ mt: 5 }}
               disabled={!isDirty || isLoading}
             >
