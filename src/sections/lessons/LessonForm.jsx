@@ -213,17 +213,7 @@ function LessonForm() {
       toast.success('Lesson added successfully.', { duration: 5000 });
       toast.custom(
         (t) => (
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '16px',
-              color: 'white',
-              borderRadius: '8px',
-            }}
-            onClick={() => toast.dismiss(t.id)}
-          >
+          <div onClick={() => toast.dismiss(t.id)}>
             <a
               href={lessonLink}
               target="_blank"
@@ -260,17 +250,7 @@ function LessonForm() {
       toast.success('Lesson updated successfully.', { duration: 5000 });
       toast.custom(
         (t) => (
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '16px',
-              color: 'white',
-              borderRadius: '8px',
-            }}
-            onClick={() => toast.dismiss(t.id)}
-          >
+          <div onClick={() => toast.dismiss(t.id)}>
             <a
               href={lessonLink}
               target="_blank"
