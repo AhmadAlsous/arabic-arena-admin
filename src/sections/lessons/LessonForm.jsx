@@ -221,7 +221,7 @@ function LessonForm() {
               padding: '16px',
               color: 'white',
               borderRadius: '8px',
-              boxShadow: '0 0 10px rgba(0, 0, 0, 0.25)',
+              boxShadow: '0 0 5px rgba(0, 0, 0, 0.25)',
             }}
             onClick={() => toast.dismiss(t.id)}
           >
@@ -269,7 +269,7 @@ function LessonForm() {
               padding: '16px',
               color: 'white',
               borderRadius: '8px',
-              boxShadow: '0 0 10px rgba(0, 0, 0, 0.25)',
+              boxShadow: '0 0 5px rgba(0, 0, 0, 0.25)',
             }}
             onClick={() => toast.dismiss(t.id)}
           >
