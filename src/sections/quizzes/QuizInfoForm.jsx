@@ -112,7 +112,7 @@ function QuizInfoForm({ register, errors, control }) {
             </FormControl>
           </Input>
         </Stack>
-        <Stack width={'50%'}>
+        <Stack direction={'row'} spacing={2} width={'100%'}>
           <InfoIconContainer>
             <Input errors={errors}>
               <TextField
@@ -144,6 +144,27 @@ function QuizInfoForm({ register, errors, control }) {
                 arrow
               >
                 <Icon id="time" icon="material-symbols:info-outline" />
+              </StyledTooltip>
+            </InfoIcon>
+          </InfoIconContainer>
+          <InfoIconContainer>
+            <Input errors={errors}>
+              <TextField
+                id="imageLink"
+                label="Quiz Cover Image Link (optional)"
+                variant="outlined"
+                fullWidth
+                size="normal"
+                error={!!errors.imageLink}
+                {...register('imageLink')}
+              />
+            </Input>
+            <InfoIcon>
+              <StyledTooltip
+                title="This image will appear as the cover image for the quiz. If no image is provided, a default image will be used."
+                arrow
+              >
+                <Icon id="imageLink" icon="material-symbols:info-outline" />
               </StyledTooltip>
             </InfoIcon>
           </InfoIconContainer>

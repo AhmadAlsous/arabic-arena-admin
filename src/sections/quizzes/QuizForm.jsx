@@ -54,6 +54,7 @@ function QuizForm() {
           level: '',
           type: '',
           time: '',
+          imageLink: '',
           questions: [
             {
               questionArabic: '',
