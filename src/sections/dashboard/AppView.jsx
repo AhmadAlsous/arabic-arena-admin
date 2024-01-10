@@ -34,7 +34,7 @@ export default function AppView() {
   const distribution = {};
   languages.forEach((language) => {
     distribution[language.language] = users
-      ? users.filter((user) => user.language === language).length
+      ? users.filter((user) => user.language.toLowerCase() === language).length
       : 0;
   });
   const navigate = useNavigate();
