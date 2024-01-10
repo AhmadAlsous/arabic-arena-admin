@@ -37,6 +37,13 @@ export default function AppView() {
       ? users.filter((user) => user.language.toLowerCase() === language).length
       : 0;
   });
+  console.log(distribution);
+  console.log(
+    Object.keys(distribution).map((key) => ({
+      label: formatName(key),
+      value: distribution[key],
+    }))
+  );
   const navigate = useNavigate();
   return (
     <Container maxWidth="xl">
