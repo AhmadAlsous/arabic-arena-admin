@@ -61,3 +61,12 @@ export const deleteLesson = async (id) => {
   const text = await response.text();
   return text ? JSON.parse(text) : {};
 };
+
+export const getLessonCount = async () => {
+  const response = await fetch(`${BACKEND_URL}/lessons/count`);
+  if (!response.ok) {
+    console.log(response);
+    throw new Error();
+  }
+  return await response.json();
+};

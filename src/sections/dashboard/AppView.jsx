@@ -6,8 +6,19 @@ import AppWidgetSummary from './Summary';
 import AppConversionRates from './LanguageDistribution';
 import { Card, Stack } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { getLessonCount } from 'src/services/lessonServices';
+import { getQuizCount } from 'src/services/quizServices';
 
 export default function AppView() {
+  const { data: lessonCount } = useQuery({
+    queryKey: ['lessonsCount'],
+    queryFn: getLessonCount,
+  });
+  const { data: quizCount } = useQuery({
+    queryKey: ['quizzesCount'],
+    queryFn: getQuizCount,
+  });
   const navigate = useNavigate();
   return (
     <Container maxWidth="xl">
@@ -28,7 +39,7 @@ export default function AppView() {
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
             title="Lessons"
-            total={714}
+            total={lessonCount ? lessonCount : ''}
             link={'/lessons'}
             icon={<img alt="icon" src="/assets/icons/glass/book.png" />}
           />
@@ -37,7 +48,7 @@ export default function AppView() {
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
             title="Quizzes"
-            total={172}
+            total={quizCount ? quizCount : ''}
             link={'/quizzes'}
             icon={<img alt="icon" src="/assets/icons/glass/graduation.png" />}
           />

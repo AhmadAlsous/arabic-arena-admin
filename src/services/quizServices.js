@@ -59,3 +59,12 @@ export const deleteQuiz = async (id) => {
     throw new Error();
   }
 };
+
+export const getQuizCount = async () => {
+  const response = await fetch(`${BACKEND_URL}/quizzes/count`);
+  if (!response.ok) {
+    console.log(response);
+    throw new Error();
+  }
+  return await response.json();
+};
