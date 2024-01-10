@@ -60,8 +60,18 @@ export default function PasswordView() {
   const currentPassword = watch('currentPassword');
   const newPassword = watch('newPassword');
 
-  const validateNewPassword = (value) =>
-    value === currentPassword ? 'New password must be different from current password' : true;
+  const validateNewPassword = (value) => {
+    if (value === currentPassword) {
+      return 'New password must be different from current password';
+    }
+    if (value.length < 8) {
+      return 'Password must be at least 8 characters long';
+    }
+    if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(value)) {
+      return 'Password must contain both letters and numbers';
+    }
+    return true;
+  };
 
   const validateConfirmPassword = (value) =>
     value === newPassword ? true : 'Passwords do not match';
