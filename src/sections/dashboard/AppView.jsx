@@ -9,6 +9,9 @@ import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getLessonCount } from 'src/services/lessonServices';
 import { getQuizCount } from 'src/services/quizServices';
+import { fetchUsers } from 'src/services/userServices';
+import { languages } from 'src/config/languages';
+import { formatName } from 'src/utils/stringOperations';
 
 export default function AppView() {
   const { data: lessonCount } = useQuery({
@@ -18,6 +21,21 @@ export default function AppView() {
   const { data: quizCount } = useQuery({
     queryKey: ['quizzesCount'],
     queryFn: getQuizCount,
+  });
+  const { data: users } = useQuery({
+    queryKey: ['users'],
+    queryFn: fetchUsers,
+  });
+  const beginnerCount = users ? users.filter((user) => user.level === 'Beginner').length : 0;
+  const intermediateCount = users
+    ? users.filter((user) => user.level === 'Intermediate').length
+    : 0;
+  const advancedCount = users ? users.filter((user) => user.level === 'Advanced').length : 0;
+  const distribution = {};
+  languages.forEach((language) => {
+    distribution[language.language] = users
+      ? users.filter((user) => user.language === language).length
+      : 0;
   });
   const navigate = useNavigate();
   return (
@@ -39,7 +57,7 @@ export default function AppView() {
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
             title="Lessons"
-            total={lessonCount ? lessonCount : ''}
+            total={lessonCount ? lessonCount : ' '}
             link={'/lessons'}
             icon={<img alt="icon" src="/assets/icons/glass/book.png" />}
           />
@@ -48,7 +66,7 @@ export default function AppView() {
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
             title="Quizzes"
-            total={quizCount ? quizCount : ''}
+            total={quizCount ? quizCount : ' '}
             link={'/quizzes'}
             icon={<img alt="icon" src="/assets/icons/glass/graduation.png" />}
           />
@@ -68,9 +86,9 @@ export default function AppView() {
             title="Level Distribution"
             chart={{
               series: [
-                { label: 'Beginner', value: 4344 },
-                { label: 'Intermediate', value: 5435 },
-                { label: 'Advanced', value: 1443 },
+                { label: 'Beginner', value: beginnerCount },
+                { label: 'Intermediate', value: intermediateCount },
+                { label: 'Advanced', value: advancedCount },
               ],
               colors: ['#252D63', '#43a0d8', '#99e7d9'],
             }}
@@ -81,18 +99,10 @@ export default function AppView() {
           <AppConversionRates
             title="Language Distribution"
             chart={{
-              series: [
-                { label: 'Italy', value: 400 },
-                { label: 'Japan', value: 430 },
-                { label: 'China', value: 448 },
-                { label: 'Canada', value: 470 },
-                { label: 'France', value: 540 },
-                { label: 'Germany', value: 580 },
-                { label: 'South Korea', value: 690 },
-                { label: 'Netherlands', value: 1100 },
-                { label: 'United States', value: 1200 },
-                { label: 'United Kingdom', value: 1380 },
-              ],
+              series: Object.keys(distribution).map((key) => ({
+                label: formatName(key),
+                value: distribution[key],
+              })),
               colors: ['#43a0d8'],
             }}
           />

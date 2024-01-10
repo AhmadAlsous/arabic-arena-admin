@@ -70,7 +70,7 @@ export default function UserPage() {
         return {
           name: `${firstName} ${lastName}`,
           email: id,
-          level,
+          level: level ? level : '-',
           language,
         };
       })
