@@ -37,7 +37,6 @@ export default function AppView() {
       ? users.filter((user) => user.language.toLowerCase() === language.language).length
       : 0;
   });
-  console.log(distribution);
   const navigate = useNavigate();
   return (
     <Container maxWidth="xl">

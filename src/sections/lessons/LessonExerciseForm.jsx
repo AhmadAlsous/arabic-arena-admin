@@ -273,20 +273,13 @@ function LessonExerciseForm({ register, errors, setValue, watch, control, isQuiz
               <Stack direction={'column'} width={'100%'}>
                 <TextField
                   id={`${isQuiz ? 'questions' : 'exercises'}.${index}.questionEnglish`}
-                  label={`${isQuiz ? 'Question' : 'Exercise'} English Title`}
+                  label={`${isQuiz ? 'Question' : 'Exercise'} English Title (optional)`}
                   variant="outlined"
                   fullWidth
                   size="normal"
                   error={!!errors.exercises?.[index]?.questionEnglish}
-                  {...register(`${isQuiz ? 'questions' : 'exercises'}.${index}.questionEnglish`, {
-                    required: 'This field is required',
-                  })}
+                  {...register(`${isQuiz ? 'questions' : 'exercises'}.${index}.questionEnglish`)}
                 />
-                {!!errors.exercises?.[index]?.questionEnglish && (
-                  <FormErrorMessage>
-                    {errors.exercises[index].questionEnglish.message}
-                  </FormErrorMessage>
-                )}
               </Stack>
             </Stack>
             <Stack direction={'row'} spacing={2} width={'100%'}>
