@@ -50,16 +50,14 @@ export default function LessonsView({ isQuiz = false }) {
   const [selectedType, setSelectedType] = useState('All');
   const [searchWord, setSearchWord] = useState('');
   const filteredLessons = data
-    ? data
-        .reverse()
-        .filter(
-          (lesson) =>
-            (selectedLevel === 'All' || lesson.level === selectedLevel) &&
-            (selectedType === 'All' || lesson.type === selectedType) &&
-            (searchWord === '' ||
-              lesson.titleArabic.includes(searchWord) ||
-              lesson.titleEnglish.toLowerCase().includes(searchWord.toLowerCase()))
-        )
+    ? data.filter(
+        (lesson) =>
+          (selectedLevel === 'All' || lesson.level === selectedLevel) &&
+          (selectedType === 'All' || lesson.type === selectedType) &&
+          (searchWord === '' ||
+            lesson.titleArabic.includes(searchWord) ||
+            lesson.titleEnglish.toLowerCase().includes(searchWord.toLowerCase()))
+      )
     : [];
 
   return (

@@ -126,6 +126,7 @@ export default function PasswordView() {
                     ),
                   }}
                   error={!!errors.currentPassword}
+                  helperText={errors.currentPassword?.message}
                   {...register('currentPassword', { required: 'This field is required' })}
                 />
               </Input>

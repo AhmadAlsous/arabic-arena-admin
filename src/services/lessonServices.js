@@ -68,5 +68,10 @@ export const getLessonCount = async () => {
     console.log(response);
     throw new Error();
   }
-  return await response.json();
+  const count = await response.json();
+  let totalCount = 0;
+  Object.keys(count).forEach((key) => {
+    totalCount += count[key];
+  });
+  return totalCount;
 };
