@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getLessonCount } from 'src/services/lessonServices';
 import { getQuizCount } from 'src/services/quizServices';
-import { fetchUsers } from 'src/services/userServices';
+import { fetchUsers, getFeedbackCount } from 'src/services/userServices';
 import { languages } from 'src/config/languages';
 import { formatName } from 'src/utils/stringOperations';
 
@@ -25,6 +25,10 @@ export default function AppView() {
   const { data: users } = useQuery({
     queryKey: ['users'],
     queryFn: fetchUsers,
+  });
+  const { data: feedbackCount } = useQuery({
+    queryKey: ['feedbackCount'],
+    queryFn: getFeedbackCount,
   });
   const beginnerCount = users ? users.filter((user) => user.level === 'Beginner').length : 0;
   const intermediateCount = users
@@ -75,7 +79,7 @@ export default function AppView() {
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
             title="Feedbacks"
-            total={234}
+            total={feedbackCount ? feedbackCount : ' '}
             link={'/feedback'}
             icon={<img alt="icon" src="/assets/icons/glass/feedback.png" />}
           />
