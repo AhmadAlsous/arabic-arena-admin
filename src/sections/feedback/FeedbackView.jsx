@@ -62,7 +62,7 @@ export default function FeedbackPage() {
         name: feedback.name,
         type: feedback.type,
         text: feedback.text,
-        date: new Date(parseInt(feedback.id)),
+        date: new Date(parseInt(feedback.id)).toLocaleDateString('en-GB'),
       }))
     : [];
 
