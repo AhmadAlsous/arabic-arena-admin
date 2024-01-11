@@ -1,5 +1,4 @@
 import { useState } from 'react';
-
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
@@ -8,11 +7,7 @@ import TableBody from '@mui/material/TableBody';
 import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
-
-import { feedback } from 'src/_mock/feedback';
-
 import Scrollbar from 'src/components/scrollbar';
-
 import FeedbackTableRow from './FeedbackTableRow';
 import UserTableHead from '../user/UserTableHead';
 import { applyFilter, getComparator } from '../user/utils';
