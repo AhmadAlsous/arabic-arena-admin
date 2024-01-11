@@ -48,7 +48,7 @@ export default function AppView() {
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
             title="Users"
-            total={users ? users.count : ' '}
+            total={users ? users.length : ' '}
             link={'/users'}
             icon={<img alt="icon" src="/assets/icons/glass/graduated.png" />}
           />
