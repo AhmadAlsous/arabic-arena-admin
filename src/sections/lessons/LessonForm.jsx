@@ -128,6 +128,10 @@ function LessonForm() {
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
 
+    if (!doc.body || doc.body.innerHTML.trim() === '') {
+      return '';
+    }
+
     const applyAlignmentToParent = (el) => {
       while (el.parentNode && el.parentNode !== doc.body) {
         el = el.parentNode;
