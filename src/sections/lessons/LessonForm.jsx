@@ -118,6 +118,14 @@ function LessonForm() {
     return () => subscription.unsubscribe();
   }, [watch, getValues]);
 
+  const toHtml = (editorState) => {
+    let html = draftToHtml(editorState);
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    return doc.body.innerHTML;
+  };
+
   const saveWord = useMutation({
     mutationFn: addWord,
     onMutate: () => {
@@ -255,6 +263,8 @@ function LessonForm() {
 
   const onSubmit = async (data) => {
     if (isNew) data.id = generateUUID();
+    if (typeof data.text !== 'string') data.text = toHtml(data.text);
+    if (typeof data.videoText !== 'string') data.videoText = toHtml(data.videoText);
 
     if (data.hasTable) {
       const arabicWords = data.table.map((word) => word.arabicWord);
