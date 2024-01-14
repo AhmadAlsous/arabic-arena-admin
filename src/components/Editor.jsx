@@ -137,7 +137,7 @@ function Editor({ setValue, text, isVideo }) {
         marginTop: '-6px',
       }}
       toolbarStyle={{ border: '1px solid #ccc' }}
-      placeholder={isVideo ? 'Enter video transcript here...' : 'Enter lesson content here...'}
+      placeholder={isVideo ? 'Enter video transcript here... (optional)' : 'Enter lesson content here... (optional)'}
     />
   );
 }

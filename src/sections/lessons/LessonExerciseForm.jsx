@@ -206,7 +206,7 @@ function LessonExerciseForm({ register, errors, setValue, watch, control, isQuiz
           />
           <BigInfoIcon>
             <StyledTooltip
-              title="Make sure to add exercises to help calculate the student's progress. Each exercise can be either multiple choice (one answer) or all that apply (multiple answers). You can only change the question type if no correct answers have been marked."
+              title="Make sure to add exercises to help calculate the student's progress. Each exercise can be either multiple choice (one correct answer) or all that apply (multiple correct answers)."
               arrow
             >
               <Icon id="imageLink" icon="material-symbols:info-outline" />

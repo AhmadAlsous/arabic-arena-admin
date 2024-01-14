@@ -119,8 +119,11 @@ function LessonForm() {
   }, [watch, getValues]);
 
   const toHtml = (editorState) => {
-    let html = draftToHtml(editorState);
+    if (!editorState || editorState.getCurrentContent().hasText() === false) {
+      return '';
+    }
 
+    let html = draftToHtml(editorState);
     const arabicRegex = /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
