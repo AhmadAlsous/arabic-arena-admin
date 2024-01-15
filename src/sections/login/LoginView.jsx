@@ -60,7 +60,6 @@ export default function LoginView() {
 
   const onSubmit = (data) => {
     login.mutate(data);
-    console.log(data);
   };
 
   return (

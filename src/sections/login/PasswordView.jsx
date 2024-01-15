@@ -77,7 +77,6 @@ export default function PasswordView() {
     value === newPassword ? true : 'Passwords do not match';
 
   const onSubmit = (data) => {
-    console.log(data);
     editPassword.mutate({
       id: 'admin',
       password: data.currentPassword,
